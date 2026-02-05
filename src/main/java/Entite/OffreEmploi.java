@@ -31,19 +31,6 @@ public class OffreEmploi {
         this.rh = rh;
     }
 
-    public OffreEmploi(String titre, String description, String profilRecherche, String typeContrat, double salaire,
-            String localisation, Date datePublication, String statut, Utilisateur rh) {
-        this.titre = titre;
-        this.description = description;
-        this.profilRecherche = profilRecherche;
-        this.typeContrat = typeContrat;
-        this.salaire = salaire;
-        this.localisation = localisation;
-        this.datePublication = datePublication;
-        this.statut = statut;
-        this.rh = rh;
-    }
-
     public int getIdOffre() {
         return idOffre;
     }

@@ -1,28 +1,96 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="Controller.DashboardRHController"
-            stylesheets="@../assets/style.css" prefWidth="1024" prefHeight="768">
+            stylesheets="@../assets/style.css" prefWidth="1200" prefHeight="800">
     
     <!-- Sidebar -->
     <left>
-        <VBox spacing="10" styleClass="sidebar" prefWidth="300" style="-fx-background-color: #1e293b; -fx-padding: 20;">
+        <VBox spacing="10" styleClass="sidebar" prefWidth="220" style="-fx-background-color: #1e293b; -fx-padding: 20;">
             <Label fx:id="userInfoLabel" text="Dashboard RH" style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;" wrapText="true"/>
-            
+            <Region VBox.vgrow="ALWAYS"/>
             <Button text="Déconnexion" onAction="#logout" maxWidth="Infinity" style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold;"/>
         </VBox>
     </left>
 
     <!-- Main Content Area -->
     <center>
-        <StackPane fx:id="contentArea" style="-fx-background-color: #f8fafc; -fx-padding: 40;">
-            <VBox spacing="20" alignment="CENTER">
-                <Label text="Bienvenue dans l'Espace RH" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
+        <VBox spacing="20" style="-fx-background-color: #f8fafc; -fx-padding: 30;">
+            <Label text="Gestion des Offres d'Emploi" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
+
+            <!-- Form Section -->
+            <VBox spacing="10" styleClass="card" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10;">
+                <HBox spacing="15">
+                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                        <Label text="Titre"/>
+                        <TextField fx:id="titreField" promptText="Titre de l'offre"/>
+                    </VBox>
+                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                        <Label text="Type de contrat"/>
+                        <ComboBox fx:id="typeContratCombo" promptText="Sélectionner" maxWidth="Infinity"/>
+                    </VBox>
+                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                        <Label text="Salaire"/>
+                        <TextField fx:id="salaireField" promptText="Salaire"/>
+                    </VBox>
+                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                        <Label text="Localisation"/>
+                        <TextField fx:id="localisationField" promptText="Localisation"/>
+                    </VBox>
+                </HBox>
+                <HBox spacing="15">
+                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                        <Label text="Profil recherché"/>
+                        <TextField fx:id="profilField" promptText="Profil recherché"/>
+                    </VBox>
+                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                        <Label text="Statut"/>
+                        <ComboBox fx:id="statutCombo" promptText="Sélectionner" maxWidth="Infinity"/>
+                    </VBox>
+                </HBox>
+                <VBox spacing="5">
+                    <Label text="Description"/>
+                    <TextArea fx:id="descriptionArea" promptText="Description de l'offre" prefRowCount="3"/>
+                </VBox>
+                <HBox spacing="10" alignment="CENTER_RIGHT">
+                    <Button fx:id="addButton" text="Ajouter" onAction="#handleAdd" style="-fx-background-color: #22c55e; -fx-text-fill: white;"/>
+                    <Button fx:id="updateButton" text="Modifier" onAction="#handleUpdate" style="-fx-background-color: #3b82f6; -fx-text-fill: white;"/>
+                    <Button fx:id="deleteButton" text="Supprimer" onAction="#handleDelete" style="-fx-background-color: #ef4444; -fx-text-fill: white;"/>
+                    <Button text="Réinitialiser" onAction="#handleClear" style="-fx-background-color: #64748b; -fx-text-fill: white;"/>
+                </HBox>
             </VBox>
-        </StackPane>
+
+            <!-- Table Section -->
+            <TableView fx:id="offreTable" VBox.vgrow="ALWAYS" style="-fx-background-radius: 10;">
+                <columns>
+                    <TableColumn fx:id="colId" text="ID" prefWidth="50">
+                        <cellValueFactory><PropertyValueFactory property="idOffre"/></cellValueFactory>
+                    </TableColumn>
+                    <TableColumn fx:id="colTitre" text="Titre" prefWidth="150">
+                        <cellValueFactory><PropertyValueFactory property="titre"/></cellValueFactory>
+                    </TableColumn>
+                    <TableColumn fx:id="colTypeContrat" text="Contrat" prefWidth="100">
+                        <cellValueFactory><PropertyValueFactory property="typeContrat"/></cellValueFactory>
+                    </TableColumn>
+                    <TableColumn fx:id="colSalaire" text="Salaire" prefWidth="100">
+                        <cellValueFactory><PropertyValueFactory property="salaire"/></cellValueFactory>
+                    </TableColumn>
+                    <TableColumn fx:id="colLocalisation" text="Localisation" prefWidth="120">
+                        <cellValueFactory><PropertyValueFactory property="localisation"/></cellValueFactory>
+                    </TableColumn>
+                    <TableColumn fx:id="colStatut" text="Statut" prefWidth="100">
+                        <cellValueFactory><PropertyValueFactory property="statut"/></cellValueFactory>
+                    </TableColumn>
+                    <TableColumn fx:id="colDate" text="Date Publication" prefWidth="120">
+                        <cellValueFactory><PropertyValueFactory property="datePublication"/></cellValueFactory>
+                    </TableColumn>
+                </columns>
+            </TableView>
+        </VBox>
     </center>
 
 </BorderPane>
