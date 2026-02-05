@@ -12,9 +12,11 @@ public class MainApp extends Application {
     public void start(Stage primaryStage) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/view/Login.fxml"));
-            primaryStage.setTitle("Project Management System");
-            primaryStage.setScene(new Scene(root));
-            primaryStage.setFullScreen(true);
+            primaryStage.setTitle("PlanUp - Project Management System");
+            Scene scene = new Scene(root);
+            primaryStage.setScene(scene);
+            primaryStage.setMinWidth(1200);
+            primaryStage.setMinHeight(1200);
             primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();

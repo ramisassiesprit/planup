@@ -7,7 +7,6 @@ import java.sql.SQLException;
 public class DataSource {
 
     private static DataSource ds;
-    private Connection con;
 
     private String url = "jdbc:mysql://localhost:3306/esprit1alinfo1";
     private String user = "root";
@@ -15,15 +14,21 @@ public class DataSource {
 
     private DataSource() {
         try {
-            con = DriverManager.getConnection(url, user, password);
+            Connection testCon = DriverManager.getConnection(url, user, password);
+            System.out.println("[DataSource] Database connection test successful");
+            testCon.close();
         } catch (SQLException e) {
-            System.out.println(e);
+            System.out.println("[DataSource] Database connection test failed: " + e.getMessage());
         }
-
     }
 
     public Connection getCon() {
-        return con;
+        try {
+            return DriverManager.getConnection(url, user, password);
+        } catch (SQLException e) {
+            System.out.println("[DataSource] Error creating connection: " + e.getMessage());
+            return null;
+        }
     }
 
     public static DataSource getInstance() {
