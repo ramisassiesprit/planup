@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<DialogPane xmlns:fx="http://javafx.com/fxml" fx:controller="Controller.CreateEditUserDialogController">
+    <content>
+        <VBox spacing="10">
+            <TextField fx:id="cinField" promptText="CIN" />
+            <TextField fx:id="nomField" promptText="Nom" />
+            <TextField fx:id="prenomField" promptText="Prénom" />
+            <TextField fx:id="emailField" promptText="Email" />
+            <PasswordField fx:id="motDePasseField" promptText="Mot de passe" />
+            <TextField fx:id="telField" promptText="Téléphone" />
+            <ComboBox fx:id="roleComboBox" promptText="Rôle" />
+        </VBox>
+    </content>
+    <buttonTypes>
+        <ButtonType text="Enregistrer" buttonData="OK_DONE" />
+        <ButtonType text="Annuler" buttonData="CANCEL_CLOSE" />
+    </buttonTypes>
+</DialogPane>

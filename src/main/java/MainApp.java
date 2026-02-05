@@ -14,6 +14,7 @@ public class MainApp extends Application {
             Parent root = FXMLLoader.load(getClass().getResource("/view/Login.fxml"));
             primaryStage.setTitle("Project Management System");
             primaryStage.setScene(new Scene(root));
+            primaryStage.setFullScreen(true);
             primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();
