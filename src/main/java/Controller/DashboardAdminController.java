@@ -21,6 +21,7 @@ import javafx.scene.control.ButtonBar;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -31,6 +32,9 @@ public class DashboardAdminController {
 
     @FXML
     private StackPane contentArea;
+
+    @FXML
+    private VBox mainUserView;
 
     @FXML
     private Label userInfoLabel;
@@ -208,7 +212,8 @@ public class DashboardAdminController {
 
     @FXML
     private void showUsers() {
-        loadViewWithRole("/view/dashboardadmin.fxml", "ADMIN");
+        contentArea.getChildren().setAll(mainUserView);
+        refreshUsersTable();
     }
 
     @FXML
