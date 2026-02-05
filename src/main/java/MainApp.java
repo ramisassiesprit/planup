@@ -11,7 +11,7 @@ public class MainApp extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/view/ProjectView.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/view/Login.fxml"));
             primaryStage.setTitle("Project Management System");
             primaryStage.setScene(new Scene(root));
             primaryStage.show();
