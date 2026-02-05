@@ -20,6 +20,8 @@ public class DashboardManagerController {
     @FXML
     private Label userInfoLabel;
 
+    private String userRole = "MANAGER";
+
     @FXML
     public void initialize() {
         // Charger la vue des projets par défaut
@@ -29,17 +31,18 @@ public class DashboardManagerController {
     public void setUserInfo(Utilisateur user) {
         if (user != null) {
             userInfoLabel.setText("Dashboard MANAGER - " + user.getPrenom() + " " + user.getNom());
+            this.userRole = user.getRole();
         }
     }
 
     @FXML
     private void showProjects() {
-        loadView("/view/ProjectView.fxml");
+        loadViewWithRole("/view/ProjectView.fxml", "MANAGER");
     }
 
     @FXML
     private void showSprints() {
-        loadView("/view/SprintView.fxml");
+        loadViewWithRole("/view/SprintView.fxml", "MANAGER");
     }
 
     @FXML
@@ -55,6 +58,31 @@ public class DashboardManagerController {
             Stage stage = (Stage) contentArea.getScene().getWindow();
             stage.setTitle("Login");
             stage.setScene(new Scene(root));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadViewWithRole(String fxmlPath, String role) {
+        try {
+            URL resource = getClass().getResource(fxmlPath);
+            if (resource == null) {
+                System.err.println("Le fichier FXML n'a pas été trouvé : " + fxmlPath);
+                return;
+            }
+            FXMLLoader loader = new FXMLLoader(resource);
+            Parent view = loader.load();
+
+            // Passer le rôle au contrôleur
+            Object controller = loader.getController();
+            if (controller instanceof ProjectController) {
+                ((ProjectController) controller).setUserRole(role);
+            } else if (controller instanceof SprintController) {
+                ((SprintController) controller).setUserRole(role);
+            }
+
+            contentArea.getChildren().clear();
+            contentArea.getChildren().add(view);
         } catch (IOException e) {
             e.printStackTrace();
         }

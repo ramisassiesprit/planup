@@ -70,4 +70,25 @@ public class ServiceSprint implements IService<Sprint> {
         }
         return list;
     }
+
+    /**
+     * Récupère tous les sprints d'un projet spécifique
+     * 
+     * @param idProject L'ID du projet
+     * @return Liste des sprints du projet
+     */
+    public List<Sprint> getSprintsByProject(int idProject) throws SQLException {
+        List<Sprint> list = new ArrayList<>();
+        String req = "SELECT s.*, p.name as project_name, p.type as project_type FROM `sprint` s " +
+                "JOIN `project` p ON s.id_project = p.id_project WHERE s.id_project = ?;";
+        PreparedStatement pst = connect.prepareStatement(req);
+        pst.setInt(1, idProject);
+        ResultSet rs = pst.executeQuery();
+        while (rs.next()) {
+            Project p = new Project(rs.getInt("id_project"), rs.getString("project_name"),
+                    rs.getString("project_type"));
+            list.add(new Sprint(rs.getInt("id_sprint"), rs.getString("name"), p));
+        }
+        return list;
+    }
 }
