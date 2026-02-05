@@ -11,7 +11,11 @@
     <left>
         <VBox spacing="10" styleClass="sidebar" prefWidth="300" style="-fx-background-color: #1e293b; -fx-padding: 20;">
             <Label fx:id="userInfoLabel" text="Dashboard DEVELOPPEUR" style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;" wrapText="true"/>
-            
+            <Region prefHeight="20"/>
+            <VBox spacing="5" VBox.vgrow="ALWAYS">
+                <Button text="Mes Projets" onAction="#showProjects" maxWidth="Infinity" styleClass="sidebar-button"/>
+                <Button text="Mes Sprints" onAction="#showSprints" maxWidth="Infinity" styleClass="sidebar-button"/>
+            </VBox>
             <Button text="Déconnexion" onAction="#logout" maxWidth="Infinity" style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold;"/>
         </VBox>
     </left>

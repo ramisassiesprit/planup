@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
 
 public class DashboardIntegrateurController {
 
@@ -19,10 +20,23 @@ public class DashboardIntegrateurController {
     @FXML
     private Label userInfoLabel;
 
+    private String userRole = "INTEGRATEUR";
+
     public void setUserInfo(Utilisateur user) {
         if (user != null) {
             userInfoLabel.setText("Dashboard INTEGRATEUR - " + user.getPrenom() + " " + user.getNom());
+            this.userRole = user.getRole();
         }
+    }
+
+    @FXML
+    private void showProjects() {
+        loadViewWithRole("/view/ProjectView.fxml", "INTEGRATEUR");
+    }
+
+    @FXML
+    private void showSprints() {
+        loadViewWithRole("/view/SprintView.fxml", "INTEGRATEUR");
     }
 
     @FXML
@@ -32,6 +46,31 @@ public class DashboardIntegrateurController {
             Stage stage = (Stage) userInfoLabel.getScene().getWindow();
             stage.setTitle("Login");
             stage.setScene(new Scene(root));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadViewWithRole(String fxmlPath, String role) {
+        try {
+            URL resource = getClass().getResource(fxmlPath);
+            if (resource == null) {
+                System.err.println("Le fichier FXML n'a pas été trouvé : " + fxmlPath);
+                return;
+            }
+            FXMLLoader loader = new FXMLLoader(resource);
+            Parent view = loader.load();
+
+            // Passer le rôle au contrôleur
+            Object controller = loader.getController();
+            if (controller instanceof ProjectController) {
+                ((ProjectController) controller).setUserRole(role);
+            } else if (controller instanceof SprintController) {
+                ((SprintController) controller).setUserRole(role);
+            }
+
+            contentArea.getChildren().clear();
+            contentArea.getChildren().add(view);
         } catch (IOException e) {
             e.printStackTrace();
         }

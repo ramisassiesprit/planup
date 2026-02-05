@@ -206,4 +206,29 @@ public class DashboardAdminController {
             e.printStackTrace();
         }
     }
+
+    private void loadViewWithRole(String fxmlPath, String role) {
+        try {
+            URL resource = getClass().getResource(fxmlPath);
+            if (resource == null) {
+                System.err.println("Le fichier FXML n'a pas été trouvé : " + fxmlPath);
+                return;
+            }
+            FXMLLoader loader = new FXMLLoader(resource);
+            Parent view = loader.load();
+
+            // Passer le rôle au contrôleur
+            Object controller = loader.getController();
+            if (controller instanceof ProjectController) {
+                ((ProjectController) controller).setUserRole(role);
+            } else if (controller instanceof SprintController) {
+                ((SprintController) controller).setUserRole(role);
+            }
+
+            contentArea.getChildren().clear();
+            contentArea.getChildren().add(view);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
