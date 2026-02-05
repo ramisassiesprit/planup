@@ -9,7 +9,7 @@
            xmlns:fx="http://javafx.com/fxml"
            fx:controller="Controller.LoginController"
            prefHeight="400.0" prefWidth="600.0"
-           stylesheets="@../style.css"
+           stylesheets="@../assets/style.css"
            style="-fx-background-color: #0f172a;">
 
     <VBox spacing="30" alignment="CENTER" maxWidth="400" styleClass="card">

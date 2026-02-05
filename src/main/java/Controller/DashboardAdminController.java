@@ -24,6 +24,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 
 public class DashboardAdminController {
@@ -193,6 +194,21 @@ public class DashboardAdminController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    private void showProjects() {
+        loadViewWithRole("/view/ProjectView.fxml", "ADMIN");
+    }
+
+    @FXML
+    private void showSprints() {
+        loadViewWithRole("/view/SprintView.fxml", "ADMIN");
+    }
+
+    @FXML
+    private void showUsers() {
+        loadViewWithRole("/view/dashboardadmin.fxml", "ADMIN");
     }
 
     @FXML
