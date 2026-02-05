@@ -19,8 +19,23 @@
     <!-- Main Content Area -->
     <center>
         <StackPane fx:id="contentArea" style="-fx-background-color: #f8fafc; -fx-padding: 40;">
-            <VBox spacing="20" alignment="CENTER">
+            <VBox spacing="20">
                 <Label text="Bienvenue dans l'Espace Administrateur" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
+                <HBox spacing="10">
+                    <Button text="Créer Utilisateur" onAction="#onCreateUser" style="-fx-background-color: #22c55e; -fx-text-fill: white; -fx-font-weight: bold;" />
+                </HBox>
+                <TableView fx:id="usersTable" prefHeight="500">
+                    <columns>
+                        <TableColumn fx:id="cinColumn" text="CIN" prefWidth="100" />
+                        <TableColumn fx:id="nomColumn" text="Nom" prefWidth="150" />
+                        <TableColumn fx:id="prenomColumn" text="Prénom" prefWidth="150" />
+                        <TableColumn fx:id="emailColumn" text="Email" prefWidth="220" />
+                        <TableColumn fx:id="telColumn" text="Téléphone" prefWidth="140" />
+                        <TableColumn fx:id="roleColumn" text="Rôle" prefWidth="120" />
+                        <TableColumn fx:id="editColumn" text="Editer" prefWidth="80" />
+                        <TableColumn fx:id="deleteColumn" text="Supprimer" prefWidth="100" />
+                    </columns>
+                </TableView>
             </VBox>
         </StackPane>
     </center>

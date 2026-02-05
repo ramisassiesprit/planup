@@ -7,6 +7,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ServiceUtilisateur {
     private Connection connect = DataSource.getInstance().getCon();
@@ -101,5 +103,33 @@ public class ServiceUtilisateur {
                 rs.getString("num_tel"),
                 rs.getString("role")
         );
+    }
+
+    public List<Utilisateur> afficher() {
+        List<Utilisateur> utilisateurs = new ArrayList<>();
+        String req = "SELECT * FROM utilisateur";
+        try {
+            PreparedStatement pst = connect.prepareStatement(req);
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                utilisateurs.add(mapResultSetToUtilisateur(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return utilisateurs;
+    }
+
+    public boolean supprimer(int cin) {
+        String req = "DELETE FROM utilisateur WHERE cin = ?";
+        try {
+            PreparedStatement pst = connect.prepareStatement(req);
+            pst.setInt(1, cin);
+            int res = pst.executeUpdate();
+            return res > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
