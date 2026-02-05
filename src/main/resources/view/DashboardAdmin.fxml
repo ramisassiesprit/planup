@@ -15,7 +15,7 @@
             <VBox spacing="5" VBox.vgrow="ALWAYS">
                 <Button text="Projets" onAction="#showProjects" maxWidth="Infinity" styleClass="sidebar-button"/>
                 <Button text="Sprints" onAction="#showSprints" maxWidth="Infinity" styleClass="sidebar-button"/>
-               
+                <Button text="Utilisateurs" onAction="#showUsers" maxWidth="Infinity" styleClass="sidebar-button"/>
             </VBox>
             <Button text="Déconnexion" onAction="#logout" maxWidth="Infinity" style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold;"/>
         </VBox>
@@ -24,7 +24,7 @@
     <!-- Main Content Area -->
     <center>
         <StackPane fx:id="contentArea" style="-fx-background-color: #f8fafc; -fx-padding: 40;">
-            <VBox spacing="20">
+            <VBox fx:id="mainUserView" spacing="20">
                 <Label text="Bienvenue dans l'Espace Administrateur" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
                 <HBox spacing="10">
                     <Button text="Créer Utilisateur" onAction="#onCreateUser" style="-fx-background-color: #22c55e; -fx-text-fill: white; -fx-font-weight: bold;" />
