@@ -32,6 +32,9 @@ import java.util.List;
 public class DashboardAdminController {
 
     @FXML
+    private javafx.scene.control.ComboBox<String> roleFilterComboBox;
+
+    @FXML
     private StackPane contentArea;
 
     @FXML
@@ -83,12 +86,23 @@ public class DashboardAdminController {
         if (loggedInAdmin != null) {
             users.removeIf(u -> u.getCin() == loggedInAdmin.getCin());
         }
+        String selectedRole = roleFilterComboBox != null ? roleFilterComboBox.getValue() : null;
+        if (selectedRole != null && !selectedRole.isEmpty() && !selectedRole.equals("Tous les rôles")) {
+            users.removeIf(u -> !selectedRole.equals(u.getRole()));
+        }
         ObservableList<Utilisateur> data = FXCollections.observableArrayList(users);
         usersTable.setItems(data);
     }
 
     @FXML
     private void initialize() {
+        // Setup role filter ComboBox
+        if (roleFilterComboBox != null) {
+            roleFilterComboBox.getItems().setAll("Tous les rôles", "ADMIN", "MANAGER", "DEVELOPPEUR", "INTEGRATEUR",
+                    "RH", "EMPLOYE");
+            roleFilterComboBox.setValue("Tous les rôles");
+            roleFilterComboBox.setOnAction(e -> refreshUsersTable());
+        }
         cinColumn.setCellValueFactory(new PropertyValueFactory<>("cin"));
         nomColumn.setCellValueFactory(new PropertyValueFactory<>("nom"));
         prenomColumn.setCellValueFactory(new PropertyValueFactory<>("prenom"));

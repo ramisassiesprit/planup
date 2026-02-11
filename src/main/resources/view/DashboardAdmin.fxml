@@ -29,6 +29,8 @@
                 <Label text="Bienvenue dans l'Espace Administrateur" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
                 <HBox spacing="10">
                     <Button text="Créer Utilisateur" onAction="#onCreateUser" style="-fx-background-color: #22c55e; -fx-text-fill: white; -fx-font-weight: bold;" />
+                    <Label text="Filtrer par rôle:" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
+                    <ComboBox fx:id="roleFilterComboBox" promptText="Tous les rôles"/>
                 </HBox>
                 <TableView fx:id="usersTable" prefHeight="500">
                     <columns>
