@@ -11,6 +11,7 @@ public class Tache {
     private int priorite;
     private int estimation;
     private Date dateAffectation;
+    private String statut; // "PAS_ENCORE_FAITE", "EN_COURS", "DEJA_FAITE"
     private Sprint sprint;
     private Utilisateur affecte;
 
@@ -18,7 +19,7 @@ public class Tache {
     }
 
     public Tache(int idTache, String name, String description, Date dateLimite, int duree, int priorite, int estimation,
-            Date dateAffectation, Sprint sprint, Utilisateur affecte) {
+            Date dateAffectation, String statut, Sprint sprint, Utilisateur affecte) {
         this.idTache = idTache;
         this.name = name;
         this.description = description;
@@ -27,12 +28,13 @@ public class Tache {
         this.priorite = priorite;
         this.estimation = estimation;
         this.dateAffectation = dateAffectation;
+        this.statut = statut;
         this.sprint = sprint;
         this.affecte = affecte;
     }
 
     public Tache(String name, String description, Date dateLimite, int duree, int priorite, int estimation,
-            Date dateAffectation, Sprint sprint, Utilisateur affecte) {
+            Date dateAffectation, String statut, Sprint sprint, Utilisateur affecte) {
         this.name = name;
         this.description = description;
         this.dateLimite = dateLimite;
@@ -40,6 +42,7 @@ public class Tache {
         this.priorite = priorite;
         this.estimation = estimation;
         this.dateAffectation = dateAffectation;
+        this.statut = statut;
         this.sprint = sprint;
         this.affecte = affecte;
     }
@@ -108,6 +111,14 @@ public class Tache {
         this.dateAffectation = dateAffectation;
     }
 
+    public String getStatut() {
+        return statut;
+    }
+
+    public void setStatut(String statut) {
+        this.statut = statut;
+    }
+
     public Sprint getSprint() {
         return sprint;
     }
@@ -129,6 +140,7 @@ public class Tache {
         return "Tache{" +
                 "idTache=" + idTache +
                 ", name='" + name + '\'' +
+                ", statut='" + statut + '\'' +
                 ", dateLimite=" + dateLimite +
                 ", sprint=" + (sprint != null ? sprint.getName() : "null") +
                 ", affecte=" + (affecte != null ? affecte.getNom() : "null") +

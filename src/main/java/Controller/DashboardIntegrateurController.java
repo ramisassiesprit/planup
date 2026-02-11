@@ -21,9 +21,11 @@ public class DashboardIntegrateurController {
     private Label userInfoLabel;
 
     private String userRole = "INTEGRATEUR";
+    private Utilisateur loggedInUser;
 
     public void setUserInfo(Utilisateur user) {
         if (user != null) {
+            this.loggedInUser = user;
             userInfoLabel.setText("Dashboard INTEGRATEUR - " + user.getPrenom() + " " + user.getNom());
             this.userRole = user.getRole();
         }
@@ -37,6 +39,11 @@ public class DashboardIntegrateurController {
     @FXML
     private void showSprints() {
         loadViewWithRole("/view/SprintView.fxml", "INTEGRATEUR");
+    }
+
+    @FXML
+    private void showTasks() {
+        loadViewWithRole("/view/TaskView.fxml", "INTEGRATEUR");
     }
 
     @FXML
@@ -61,12 +68,13 @@ public class DashboardIntegrateurController {
             FXMLLoader loader = new FXMLLoader(resource);
             Parent view = loader.load();
 
-            // Passer le rôle au contrôleur
             Object controller = loader.getController();
             if (controller instanceof ProjectController) {
                 ((ProjectController) controller).setUserRole(role);
             } else if (controller instanceof SprintController) {
                 ((SprintController) controller).setUserRole(role);
+            } else if (controller instanceof TaskController) {
+                ((TaskController) controller).setRoleAndUser(role, loggedInUser);
             }
 
             contentArea.getChildren().clear();

@@ -21,15 +21,16 @@ public class DashboardManagerController {
     private Label userInfoLabel;
 
     private String userRole = "MANAGER";
+    private Utilisateur loggedInUser;
 
     @FXML
     public void initialize() {
-        // Charger la vue des projets par défaut
         showProjects();
     }
 
     public void setUserInfo(Utilisateur user) {
         if (user != null) {
+            this.loggedInUser = user;
             userInfoLabel.setText("Dashboard MANAGER - " + user.getPrenom() + " " + user.getNom());
             this.userRole = user.getRole();
         }
@@ -47,8 +48,7 @@ public class DashboardManagerController {
 
     @FXML
     private void showTasks() {
-        // Placeholder pour les tâches si nécessaire
-        // loadView("/view/TaskView.fxml");
+        loadViewWithRole("/view/TaskView.fxml", "MANAGER");
     }
 
     @FXML
@@ -73,12 +73,13 @@ public class DashboardManagerController {
             FXMLLoader loader = new FXMLLoader(resource);
             Parent view = loader.load();
 
-            // Passer le rôle au contrôleur
             Object controller = loader.getController();
             if (controller instanceof ProjectController) {
                 ((ProjectController) controller).setUserRole(role);
             } else if (controller instanceof SprintController) {
                 ((SprintController) controller).setUserRole(role);
+            } else if (controller instanceof TaskController) {
+                ((TaskController) controller).setRoleAndUser(role, loggedInUser);
             }
 
             contentArea.getChildren().clear();

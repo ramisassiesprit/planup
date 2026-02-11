@@ -13,6 +13,7 @@
             <VBox spacing="5" VBox.vgrow="ALWAYS">
                 <Button text="Projets" onAction="#showProjects" maxWidth="Infinity" styleClass="sidebar-button"/>
                 <Button text="Sprints" onAction="#showSprints" maxWidth="Infinity" styleClass="sidebar-button"/>
+                <Button text="Tâches" onAction="#showTasks" maxWidth="Infinity" styleClass="sidebar-button"/>
             </VBox>
             <Button text="Déconnexion" onAction="#logout" maxWidth="Infinity" style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold;"/>
         </VBox>

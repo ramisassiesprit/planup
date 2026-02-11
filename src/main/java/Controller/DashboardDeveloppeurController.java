@@ -21,9 +21,11 @@ public class DashboardDeveloppeurController {
     private Label userInfoLabel;
 
     private String userRole = "DEVELOPPEUR";
+    private Utilisateur loggedInUser;
 
     public void setUserInfo(Utilisateur user) {
         if (user != null) {
+            this.loggedInUser = user;
             userInfoLabel.setText("Dashboard DEVELOPPEUR - " + user.getPrenom() + " " + user.getNom());
             this.userRole = user.getRole();
         }
@@ -41,7 +43,7 @@ public class DashboardDeveloppeurController {
 
     @FXML
     private void showMyTasks() {
-        // Placeholder pour les tâches
+        loadViewWithRole("/view/TaskView.fxml", "DEVELOPPEUR");
     }
 
     @FXML
@@ -66,12 +68,13 @@ public class DashboardDeveloppeurController {
             FXMLLoader loader = new FXMLLoader(resource);
             Parent view = loader.load();
 
-            // Passer le rôle au contrôleur
             Object controller = loader.getController();
             if (controller instanceof ProjectController) {
                 ((ProjectController) controller).setUserRole(role);
             } else if (controller instanceof SprintController) {
                 ((SprintController) controller).setUserRole(role);
+            } else if (controller instanceof TaskController) {
+                ((TaskController) controller).setRoleAndUser(role, loggedInUser);
             }
 
             contentArea.getChildren().clear();

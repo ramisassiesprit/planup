@@ -38,7 +38,6 @@ public class CreateEditUserDialogController {
     }
 
     public Utilisateur getUser() {
-        // Validate fields
         StringBuilder errors = new StringBuilder();
         int cin = 0;
         try {

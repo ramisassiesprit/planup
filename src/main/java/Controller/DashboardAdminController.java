@@ -26,6 +26,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.List;
 
 public class DashboardAdminController {
@@ -95,7 +96,6 @@ public class DashboardAdminController {
         telColumn.setCellValueFactory(new PropertyValueFactory<>("numTel"));
         roleColumn.setCellValueFactory(new PropertyValueFactory<>("role"));
 
-        // Add Edit button to each row
         editColumn.setCellFactory(col -> new TableCell<Utilisateur, Void>() {
             private final Button editBtn = new Button("Editer");
             {
@@ -117,7 +117,6 @@ public class DashboardAdminController {
             }
         });
 
-        // Add Delete button to each row
         deleteColumn.setCellFactory(col -> new TableCell<Utilisateur, Void>() {
             private final Button deleteBtn = new Button("Supprimer");
             {
@@ -128,8 +127,13 @@ public class DashboardAdminController {
                     alert.setHeaderText(null);
                     alert.showAndWait().ifPresent(type -> {
                         if (type == ButtonType.YES) {
-                            serviceUtilisateur.supprimer(user.getCin());
-                            refreshUsersTable();
+                            try {
+                                serviceUtilisateur.supprimer(user.getCin());
+                                refreshUsersTable();
+                            } catch (SQLException ex) {
+                                ex.printStackTrace();
+                                showAlert(AlertType.ERROR, "Erreur", "Suppression échouée", ex.getMessage());
+                            }
                         }
                     });
                 });
@@ -146,7 +150,6 @@ public class DashboardAdminController {
                 }
             }
         });
-        // Table will be filled in setUserInfo when admin is set
     }
 
     @FXML
@@ -171,24 +174,36 @@ public class DashboardAdminController {
                 if (result.getButtonData() == ButtonBar.ButtonData.OK_DONE) {
                     Utilisateur edited = controller.getUser();
                     if (edited == null)
-                        return; // Invalid input, error already shown
+                        return;
                     boolean success;
                     if (user == null) {
-                        success = serviceUtilisateur.ajouter(edited);
-                        if (!success) {
-                            Alert alert = new Alert(AlertType.ERROR,
-                                    "Erreur lors de l'ajout de l'utilisateur. Vérifiez que le CIN et l'email sont uniques.");
-                            alert.setHeaderText("Ajout échoué");
-                            alert.showAndWait();
+                        try {
+                            success = serviceUtilisateur.ajouter(edited);
+                            if (!success) {
+                                Alert alert = new Alert(AlertType.ERROR,
+                                        "Erreur lors de l'ajout de l'utilisateur. Vérifiez que le CIN et l'email sont uniques.");
+                                alert.setHeaderText("Ajout échoué");
+                                alert.showAndWait();
+                                return;
+                            }
+                        } catch (SQLException ex) {
+                            ex.printStackTrace();
+                            showAlert(AlertType.ERROR, "Erreur", "Ajout échoué", ex.getMessage());
                             return;
                         }
                     } else {
-                        success = serviceUtilisateur.modifier(edited);
-                        if (!success) {
-                            Alert alert = new Alert(AlertType.ERROR,
-                                    "Erreur lors de la modification de l'utilisateur.");
-                            alert.setHeaderText("Modification échouée");
-                            alert.showAndWait();
+                        try {
+                            success = serviceUtilisateur.modifier(edited);
+                            if (!success) {
+                                Alert alert = new Alert(AlertType.ERROR,
+                                        "Erreur lors de la modification de l'utilisateur.");
+                                alert.setHeaderText("Modification échouée");
+                                alert.showAndWait();
+                                return;
+                            }
+                        } catch (SQLException ex) {
+                            ex.printStackTrace();
+                            showAlert(AlertType.ERROR, "Erreur", "Modification échouée", ex.getMessage());
                             return;
                         }
                     }
@@ -217,6 +232,11 @@ public class DashboardAdminController {
     }
 
     @FXML
+    private void showTasks() {
+        loadViewWithRole("/view/TaskView.fxml", "ADMIN");
+    }
+
+    @FXML
     private void logout() {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/view/Login.fxml"));
@@ -238,12 +258,13 @@ public class DashboardAdminController {
             FXMLLoader loader = new FXMLLoader(resource);
             Parent view = loader.load();
 
-            // Passer le rôle au contrôleur
             Object controller = loader.getController();
             if (controller instanceof ProjectController) {
                 ((ProjectController) controller).setUserRole(role);
             } else if (controller instanceof SprintController) {
                 ((SprintController) controller).setUserRole(role);
+            } else if (controller instanceof TaskController) {
+                ((TaskController) controller).setRoleAndUser(role, loggedInAdmin);
             }
 
             contentArea.getChildren().clear();
@@ -251,5 +272,13 @@ public class DashboardAdminController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void showAlert(AlertType type, String title, String header, String content) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 }
