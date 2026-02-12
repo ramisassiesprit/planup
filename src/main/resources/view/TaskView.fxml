@@ -39,16 +39,8 @@
             </HBox>
         </VBox>
 
-        <!-- Liste des tâches et changement de statut -->
+        <!-- Liste des tâches -->
         <VBox spacing="15" HBox.hgrow="ALWAYS">
-            <!-- Container pour le statut (Dev/Int) -->
-            <VBox fx:id="statusContainer" spacing="10" style="-fx-background-color: #fef3c7; -fx-padding: 15; -fx-background-radius: 8; -fx-border-color: #f59e0b; -fx-border-radius: 8;">
-                <HBox spacing="10" alignment="CENTER_LEFT">
-                    <Label text="Changer le statut de la tâche sélectionnée :" style="-fx-font-weight: bold;"/>
-                    <ComboBox fx:id="statusCombo" promptText="Nouveau statut"/>
-                    <Button text="Mettre à jour" onAction="#handleStatusChange" style="-fx-background-color: #f59e0b; -fx-text-fill: white; -fx-font-weight: bold;"/>
-                </HBox>
-            </VBox>
 
             <TableView fx:id="taskTable" VBox.vgrow="ALWAYS" style="-fx-background-radius: 10;">
                 <columns>

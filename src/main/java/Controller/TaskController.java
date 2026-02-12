@@ -45,13 +45,9 @@ public class TaskController {
     private ComboBox<Sprint> sprintCombo;
     @FXML
     private ComboBox<Utilisateur> assigneeCombo;
-    @FXML
-    private ComboBox<String> statusCombo;
 
     @FXML
     private VBox formContainer;
-    @FXML
-    private VBox statusContainer;
     @FXML
     private Button btnAdd;
     @FXML
@@ -73,14 +69,7 @@ public class TaskController {
     public void initialize() {
         colId.setCellValueFactory(new PropertyValueFactory<>("idTache"));
         colName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        colStatus.setCellValueFactory(new PropertyValueFactory<>("statut"));
-
-        colAssignee.setCellValueFactory(cellData -> {
-            Utilisateur u = cellData.getValue().getAffecte();
-            return new javafx.beans.property.SimpleStringProperty(u != null ? u.getNom() : "Non assignée");
-        });
-
-        statusCombo.setItems(FXCollections.observableArrayList("PAS_ENCORE_FAITE", "EN_COURS", "DEJA_FAITE"));
+        setupStatusColumn();
 
         taskTable.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
@@ -103,16 +92,63 @@ public class TaskController {
             formContainer.setManaged(canCrud);
         }
 
-        if (statusContainer != null) {
-            statusContainer.setVisible(isDevOrInt);
-            statusContainer.setManaged(isDevOrInt);
-        }
-
         if (btnAssign != null) {
             btnAssign.setVisible("MANAGER".equalsIgnoreCase(role));
         }
 
         loadData();
+        taskTable.refresh(); // Pour forcer la mise à jour des cellules (ComboBox)
+    }
+
+    private void setupStatusColumn() {
+        colStatus.setCellValueFactory(new PropertyValueFactory<>("statut"));
+        colStatus.setCellFactory(column -> new TableCell<Tache, String>() {
+            private final ComboBox<String> comboBox = new ComboBox<>(
+                    FXCollections.observableArrayList("PAS_ENCORE_FAITE", "EN_COURS", "DEJA_FAITE"));
+
+            {
+                comboBox.setMaxWidth(Double.MAX_VALUE);
+                comboBox.setOnAction(event -> {
+                    Tache task = getTableView().getItems().get(getIndex());
+                    String newStatus = comboBox.getValue();
+                    if (task != null && newStatus != null && !newStatus.equals(task.getStatut())) {
+                        try {
+                            if (serviceTache.updateStatus(task.getIdTache(), newStatus)) {
+                                task.setStatut(newStatus);
+                                System.out.println("Statut mis à jour pour la tâche " + task.getIdTache());
+                            }
+                        } catch (SQLException e) {
+                            showAlert(Alert.AlertType.ERROR, "Erreur", "Mise à jour échouée", e.getMessage());
+                        }
+                    }
+                });
+            }
+
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setGraphic(null);
+                } else {
+                    comboBox.setValue(item);
+                    // On n'autorise la modification que pour les rôles concernés ou si on veut que
+                    // tout le monde puisse
+                    // L'utilisateur a demandé le design pour Dev/Int, mais on peut le rendre
+                    // général ou restreint
+                    boolean canEdit = "DEVELOPPEUR".equalsIgnoreCase(userRole)
+                            || "INTEGRATEUR".equalsIgnoreCase(userRole)
+                            || "MANAGER".equalsIgnoreCase(userRole)
+                            || "ADMIN".equalsIgnoreCase(userRole);
+                    comboBox.setDisable(!canEdit);
+                    setGraphic(comboBox);
+                }
+            }
+        });
+
+        colAssignee.setCellValueFactory(cellData -> {
+            Utilisateur u = cellData.getValue().getAffecte();
+            return new javafx.beans.property.SimpleStringProperty(u != null ? u.getNom() : "Non assignée");
+        });
     }
 
     private void loadData() {
@@ -147,7 +183,6 @@ public class TaskController {
             deadlinePicker.setValue(t.getDateLimite().toLocalDate());
         priorityField.setText(String.valueOf(t.getPriorite()));
         estimationField.setText(String.valueOf(t.getEstimation()));
-        statusCombo.setValue(t.getStatut());
 
         // Match Sprint in combo
         if (t.getSprint() != null) {
@@ -240,23 +275,6 @@ public class TaskController {
     }
 
     @FXML
-    private void handleStatusChange() {
-        Tache selected = taskTable.getSelectionModel().getSelectedItem();
-        String newStatus = statusCombo.getValue();
-        if (selected == null || newStatus == null)
-            return;
-
-        try {
-            if (serviceTache.updateStatus(selected.getIdTache(), newStatus)) {
-                loadData();
-                showAlert(Alert.AlertType.INFORMATION, "Succès", "Statut mis à jour", "Nouveau statut : " + newStatus);
-            }
-        } catch (SQLException e) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Mise à jour échouée", e.getMessage());
-        }
-    }
-
-    @FXML
     private void handleAssign() {
         Tache selected = taskTable.getSelectionModel().getSelectedItem();
         Utilisateur user = assigneeCombo.getValue();
@@ -280,7 +298,6 @@ public class TaskController {
         deadlinePicker.setValue(null);
         priorityField.clear();
         estimationField.clear();
-        statusCombo.setValue(null);
         sprintCombo.setValue(null);
         assigneeCombo.setValue(null);
         taskTable.getSelectionModel().clearSelection();

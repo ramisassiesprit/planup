@@ -18,7 +18,8 @@ public class ServiceAuthentification implements IAuthentificationService {
 
     /**
      * Authentifie un utilisateur avec son email et mot de passe
-     * @param email Email de l'utilisateur
+     * 
+     * @param email      Email de l'utilisateur
      * @param motDePasse Mot de passe de l'utilisateur
      * @return L'utilisateur si authentification réussie, null sinon
      */
@@ -38,8 +39,7 @@ public class ServiceAuthentification implements IAuthentificationService {
                             rs.getString("email"),
                             rs.getString("mot_de_passe"),
                             rs.getString("num_tel"),
-                            rs.getString("role")
-                    );
+                            rs.getString("role"));
                     System.out.println("Connexion réussie pour: " + user.getEmail());
                     return user;
                 }
@@ -53,7 +53,8 @@ public class ServiceAuthentification implements IAuthentificationService {
 
     /**
      * Authentifie un utilisateur avec son CIN et mot de passe
-     * @param cin CIN de l'utilisateur
+     * 
+     * @param cin        CIN de l'utilisateur
      * @param motDePasse Mot de passe de l'utilisateur
      * @return L'utilisateur si authentification réussie, null sinon
      */
@@ -73,8 +74,7 @@ public class ServiceAuthentification implements IAuthentificationService {
                             rs.getString("email"),
                             rs.getString("mot_de_passe"),
                             rs.getString("num_tel"),
-                            rs.getString("role")
-                    );
+                            rs.getString("role"));
                     System.out.println("Connexion réussie pour: " + user.getEmail());
                     return user;
                 }
@@ -88,6 +88,7 @@ public class ServiceAuthentification implements IAuthentificationService {
 
     /**
      * Vérifie si un email existe déjà dans la base de données
+     * 
      * @param email Email à vérifier
      * @return true si l'email existe, false sinon
      */
@@ -98,6 +99,7 @@ public class ServiceAuthentification implements IAuthentificationService {
 
     /**
      * Vérifie si un CIN existe déjà dans la base de données
+     * 
      * @param cin CIN à vérifier
      * @return true si le CIN existe, false sinon
      */
@@ -108,6 +110,7 @@ public class ServiceAuthentification implements IAuthentificationService {
 
     /**
      * Inscrit un nouvel utilisateur
+     * 
      * @param utilisateur L'utilisateur à inscrire
      * @return true si l'inscription réussit, false sinon
      */
@@ -126,9 +129,13 @@ public class ServiceAuthentification implements IAuthentificationService {
         }
 
         // Ajouter l'utilisateur
-        if (serviceUtilisateur.ajouter(utilisateur)) {
-            System.out.println("Inscription réussie pour: " + utilisateur.getEmail());
-            return true;
+        try {
+            if (serviceUtilisateur.ajouter(utilisateur)) {
+                System.out.println("Inscription réussie pour: " + utilisateur.getEmail());
+                return true;
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de l'inscription (SQL): " + e.getMessage());
         }
 
         System.out.println("Erreur lors de l'inscription");
@@ -137,8 +144,9 @@ public class ServiceAuthentification implements IAuthentificationService {
 
     /**
      * Change le mot de passe d'un utilisateur
-     * @param email Email de l'utilisateur
-     * @param ancienMotDePasse Ancien mot de passe
+     * 
+     * @param email             Email de l'utilisateur
+     * @param ancienMotDePasse  Ancien mot de passe
      * @param nouveauMotDePasse Nouveau mot de passe
      * @return true si le changement réussit, false sinon
      */
@@ -153,9 +161,13 @@ public class ServiceAuthentification implements IAuthentificationService {
 
         // Mettre à jour le mot de passe
         user.setMotDePasse(nouveauMotDePasse);
-        if (serviceUtilisateur.modifier(user)) {
-            System.out.println("Mot de passe changé avec succès");
-            return true;
+        try {
+            if (serviceUtilisateur.modifier(user)) {
+                System.out.println("Mot de passe changé avec succès");
+                return true;
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors du changement de mot de passe (SQL): " + e.getMessage());
         }
 
         System.out.println("Erreur lors du changement de mot de passe");
@@ -164,8 +176,9 @@ public class ServiceAuthentification implements IAuthentificationService {
 
     /**
      * Vérifie si un utilisateur a un rôle spécifique
+     * 
      * @param utilisateur L'utilisateur à vérifier
-     * @param role Le rôle à vérifier
+     * @param role        Le rôle à vérifier
      * @return true si l'utilisateur a ce rôle, false sinon
      */
     @Override

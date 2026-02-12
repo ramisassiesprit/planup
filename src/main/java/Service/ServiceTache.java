@@ -11,77 +11,88 @@ import java.util.List;
 
 public class ServiceTache implements IService<Tache> {
 
-    private Connection con = DataSource.getInstance().getCon();
-
     @Override
     public boolean ajouter(Tache t) throws SQLException {
         String query = "INSERT INTO tache (name, description, date_limite, duree, priorite, estimation, date_affectation, statut, id_sprint, cin_affecte) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        PreparedStatement ps = con.prepareStatement(query);
-        ps.setString(1, t.getName());
-        ps.setString(2, t.getDescription());
-        ps.setDate(3, t.getDateLimite());
-        ps.setInt(4, t.getDuree());
-        ps.setInt(5, t.getPriorite());
-        ps.setInt(6, t.getEstimation());
-        ps.setDate(7, t.getDateAffectation());
-        ps.setString(8, (t.getStatut() == null) ? "PAS_ENCORE_FAITE" : t.getStatut());
+        try (Connection c = DataSource.getInstance().getCon();
+                PreparedStatement ps = c.prepareStatement(query)) {
+            ps.setString(1, t.getName());
+            ps.setString(2, t.getDescription());
+            ps.setDate(3, t.getDateLimite());
+            ps.setInt(4, t.getDuree());
+            ps.setInt(5, t.getPriorite());
+            ps.setInt(6, t.getEstimation());
+            ps.setDate(7, t.getDateAffectation());
+            ps.setString(8, (t.getStatut() == null) ? "PAS_ENCORE_FAITE" : t.getStatut());
 
-        if (t.getSprint() != null)
-            ps.setInt(9, t.getSprint().getIdSprint());
-        else
-            ps.setNull(9, Types.INTEGER);
+            if (t.getSprint() != null)
+                ps.setInt(9, t.getSprint().getIdSprint());
+            else
+                ps.setNull(9, Types.INTEGER);
 
-        if (t.getAffecte() != null)
-            ps.setInt(10, t.getAffecte().getCin());
-        else
-            ps.setNull(10, Types.INTEGER);
+            if (t.getAffecte() != null)
+                ps.setInt(10, t.getAffecte().getCin());
+            else
+                ps.setNull(10, Types.INTEGER);
 
-        return ps.executeUpdate() > 0;
+            return ps.executeUpdate() > 0;
+        }
     }
 
     @Override
     public boolean supprimer(Tache t) throws SQLException {
         String query = "DELETE FROM tache WHERE id_tache = ?";
-        PreparedStatement ps = con.prepareStatement(query);
-        ps.setInt(1, t.getIdTache());
-        return ps.executeUpdate() > 0;
+        try (Connection c = DataSource.getInstance().getCon();
+                PreparedStatement ps = c.prepareStatement(query)) {
+            ps.setInt(1, t.getIdTache());
+            return ps.executeUpdate() > 0;
+        }
     }
 
     @Override
     public boolean modifier(Tache t) throws SQLException {
         String query = "UPDATE tache SET name=?, description=?, date_limite=?, duree=?, priorite=?, estimation=?, date_affectation=?, statut=?, id_sprint=?, cin_affecte=? WHERE id_tache=?";
-        PreparedStatement ps = con.prepareStatement(query);
-        ps.setString(1, t.getName());
-        ps.setString(2, t.getDescription());
-        ps.setDate(3, t.getDateLimite());
-        ps.setInt(4, t.getDuree());
-        ps.setInt(5, t.getPriorite());
-        ps.setInt(6, t.getEstimation());
-        ps.setDate(7, t.getDateAffectation());
-        ps.setString(8, t.getStatut());
+        try (Connection c = DataSource.getInstance().getCon();
+                PreparedStatement ps = c.prepareStatement(query)) {
+            ps.setString(1, t.getName());
+            ps.setString(2, t.getDescription());
+            ps.setDate(3, t.getDateLimite());
+            ps.setInt(4, t.getDuree());
+            ps.setInt(5, t.getPriorite());
+            ps.setInt(6, t.getEstimation());
+            ps.setDate(7, t.getDateAffectation());
+            ps.setString(8, t.getStatut());
 
-        if (t.getSprint() != null)
-            ps.setInt(9, t.getSprint().getIdSprint());
-        else
-            ps.setNull(9, Types.INTEGER);
+            if (t.getSprint() != null)
+                ps.setInt(9, t.getSprint().getIdSprint());
+            else
+                ps.setNull(9, Types.INTEGER);
 
-        if (t.getAffecte() != null)
-            ps.setInt(10, t.getAffecte().getCin());
-        else
-            ps.setNull(10, Types.INTEGER);
+            if (t.getAffecte() != null)
+                ps.setInt(10, t.getAffecte().getCin());
+            else
+                ps.setNull(10, Types.INTEGER);
 
-        ps.setInt(11, t.getIdTache());
-        return ps.executeUpdate() > 0;
+            ps.setInt(11, t.getIdTache());
+            return ps.executeUpdate() > 0;
+        }
     }
 
     @Override
     public Tache findbyId(int id) throws SQLException {
-        String query = "SELECT * FROM tache WHERE id_tache = ?";
-        PreparedStatement ps = con.prepareStatement(query);
-        ps.setInt(1, id);
-        ResultSet rs = ps.executeQuery();
-        if (rs.next()) {
-            return mapResultSetToTache(rs);
+        String query = "SELECT t.*, u.nom as user_nom, u.prenom as user_prenom, s.name as sprint_name " +
+                "FROM tache t " +
+                "LEFT JOIN utilisateur u ON t.cin_affecte = u.cin " +
+                "LEFT JOIN sprint s ON t.id_sprint = s.id_sprint " +
+                "WHERE t.id_tache = ?";
+        try (Connection c = DataSource.getInstance().getCon();
+                PreparedStatement ps = c.prepareStatement(query)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToTache(rs);
+                }
+            }
         }
         return null;
     }
@@ -89,42 +100,60 @@ public class ServiceTache implements IService<Tache> {
     @Override
     public List<Tache> readAll() throws SQLException {
         List<Tache> list = new ArrayList<>();
-        String query = "SELECT * FROM tache";
-        Statement ste = con.createStatement();
-        ResultSet rs = ste.executeQuery(query);
-        while (rs.next()) {
-            list.add(mapResultSetToTache(rs));
+        String query = "SELECT t.*, u.nom as user_nom, u.prenom as user_prenom, s.name as sprint_name " +
+                "FROM tache t " +
+                "LEFT JOIN utilisateur u ON t.cin_affecte = u.cin " +
+                "LEFT JOIN sprint s ON t.id_sprint = s.id_sprint";
+
+        try (Connection c = DataSource.getInstance().getCon();
+                Statement ste = c.createStatement();
+                ResultSet rs = ste.executeQuery(query)) {
+            while (rs.next()) {
+                list.add(mapResultSetToTache(rs));
+            }
         }
         return list;
     }
 
     public List<Tache> findByAssignee(int cin) throws SQLException {
         List<Tache> list = new ArrayList<>();
-        String query = "SELECT * FROM tache WHERE cin_affecte = ?";
-        PreparedStatement ps = con.prepareStatement(query);
-        ps.setInt(1, cin);
-        ResultSet rs = ps.executeQuery();
-        while (rs.next()) {
-            list.add(mapResultSetToTache(rs));
+        String query = "SELECT t.*, u.nom as user_nom, u.prenom as user_prenom, s.name as sprint_name " +
+                "FROM tache t " +
+                "LEFT JOIN utilisateur u ON t.cin_affecte = u.cin " +
+                "LEFT JOIN sprint s ON t.id_sprint = s.id_sprint " +
+                "WHERE t.cin_affecte = ?";
+
+        try (Connection c = DataSource.getInstance().getCon();
+                PreparedStatement ps = c.prepareStatement(query)) {
+            ps.setInt(1, cin);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(mapResultSetToTache(rs));
+                }
+            }
         }
         return list;
     }
 
     public boolean updateStatus(int idTache, String newStatus) throws SQLException {
         String query = "UPDATE tache SET statut = ? WHERE id_tache = ?";
-        PreparedStatement ps = con.prepareStatement(query);
-        ps.setString(1, newStatus);
-        ps.setInt(2, idTache);
-        return ps.executeUpdate() > 0;
+        try (Connection c = DataSource.getInstance().getCon();
+                PreparedStatement ps = c.prepareStatement(query)) {
+            ps.setString(1, newStatus);
+            ps.setInt(2, idTache);
+            return ps.executeUpdate() > 0;
+        }
     }
 
     public boolean assignToUser(int idTache, int cin) throws SQLException {
         String query = "UPDATE tache SET cin_affecte = ?, date_affectation = ? WHERE id_tache = ?";
-        PreparedStatement ps = con.prepareStatement(query);
-        ps.setInt(1, cin);
-        ps.setDate(2, new Date(System.currentTimeMillis()));
-        ps.setInt(3, idTache);
-        return ps.executeUpdate() > 0;
+        try (Connection c = DataSource.getInstance().getCon();
+                PreparedStatement ps = c.prepareStatement(query)) {
+            ps.setInt(1, cin);
+            ps.setDate(2, new Date(System.currentTimeMillis()));
+            ps.setInt(3, idTache);
+            return ps.executeUpdate() > 0;
+        }
     }
 
     private Tache mapResultSetToTache(ResultSet rs) throws SQLException {
@@ -139,12 +168,11 @@ public class ServiceTache implements IService<Tache> {
         t.setDateAffectation(rs.getDate("date_affectation"));
         t.setStatut(rs.getString("statut"));
 
-        // Fetch Sprint and User if needed, or just set IDs for now
-        // For a full implementation, you might want to join or call other services
         int idSprint = rs.getInt("id_sprint");
         if (!rs.wasNull()) {
             Sprint s = new Sprint();
             s.setIdSprint(idSprint);
+            s.setName(rs.getString("sprint_name"));
             t.setSprint(s);
         }
 
@@ -152,6 +180,8 @@ public class ServiceTache implements IService<Tache> {
         if (!rs.wasNull()) {
             Utilisateur u = new Utilisateur();
             u.setCin(cinAffecte);
+            u.setNom(rs.getString("user_nom"));
+            u.setPrenom(rs.getString("user_prenom"));
             t.setAffecte(u);
         }
 
