@@ -487,6 +487,16 @@ public class DashboardRHController implements Initializable {
     }
 
     @FXML
+    private void showOffres() {
+        contentArea.getChildren().removeIf(node -> node != congesView && node != welcomeView);
+        if (welcomeView != null) {
+            welcomeView.setVisible(true);
+            if (congesView != null)
+                congesView.setVisible(false);
+        }
+    }
+
+    @FXML
     private void showProjects() {
         if (congesView != null)
             congesView.setVisible(false);
