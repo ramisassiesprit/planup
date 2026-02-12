@@ -185,18 +185,18 @@ public class DashboardRHController implements Initializable {
         offre.setRh(currentUser);
 
         if (serviceOffre.ajouter(offre)) {
-            showAlert(Alert.AlertType.INFORMATION, "Succès", "Offre ajoutée avec succès.");
+            showAlert(Alert.AlertType.INFORMATION, "Succes", "Offre ajoutee avec succes.");
             loadOffres();
             handleClear();
         } else {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Échec de l'ajout de l'offre.");
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur de l'ajout de l'offre.");
         }
     }
 
     @FXML
     private void handleUpdate() {
         if (selectedOffre == null) {
-            showAlert(Alert.AlertType.WARNING, "Attention", "Veuillez sélectionner une offre à modifier.");
+            showAlert(Alert.AlertType.WARNING, "Attention", " selectionner une offre a modifier.");
             return;
         }
         if (!validateForm())
@@ -211,31 +211,31 @@ public class DashboardRHController implements Initializable {
         selectedOffre.setStatut(statutCombo.getValue());
 
         if (serviceOffre.modifier(selectedOffre)) {
-            showAlert(Alert.AlertType.INFORMATION, "Succès", "Offre modifiée avec succès.");
+            showAlert(Alert.AlertType.INFORMATION, "Succes", "Offre modifiee avec succes.");
             loadOffres();
             handleClear();
         } else {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Échec de la modification.");
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur de la modification.");
         }
     }
 
     @FXML
     private void handleDelete() {
         if (selectedOffre == null) {
-            showAlert(Alert.AlertType.WARNING, "Attention", "Veuillez sélectionner une offre à supprimer.");
+            showAlert(Alert.AlertType.WARNING, "Attention", " selectionner une offre a supprimer.");
             return;
         }
 
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Voulez-vous vraiment supprimer cette offre?",
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "supprimer cette offre?",
                 ButtonType.YES, ButtonType.NO);
         confirm.showAndWait().ifPresent(response -> {
             if (response == ButtonType.YES) {
                 if (serviceOffre.supprimer(selectedOffre.getIdOffre())) {
-                    showAlert(Alert.AlertType.INFORMATION, "Succès", "Offre supprimée avec succès.");
+                    showAlert(Alert.AlertType.INFORMATION, "Succes", "Offre supprimee avec succes.");
                     loadOffres();
                     handleClear();
                 } else {
-                    showAlert(Alert.AlertType.ERROR, "Erreur", "Échec de la suppression.");
+                    showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur de la suppression.");
                 }
             }
         });
