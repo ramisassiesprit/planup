@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
+import javafx.util.StringConverter;
 
 import java.sql.SQLException;
 import java.sql.Date;
@@ -70,6 +71,7 @@ public class TaskController {
         colId.setCellValueFactory(new PropertyValueFactory<>("idTache"));
         colName.setCellValueFactory(new PropertyValueFactory<>("name"));
         setupStatusColumn();
+        setupComboBoxConverters();
 
         taskTable.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
@@ -148,6 +150,45 @@ public class TaskController {
         colAssignee.setCellValueFactory(cellData -> {
             Utilisateur u = cellData.getValue().getAffecte();
             return new javafx.beans.property.SimpleStringProperty(u != null ? u.getNom() : "Non assignée");
+        });
+    }
+
+    /**
+     * Configure les StringConverter pour les ComboBox afin d'afficher correctement
+     * les sprints et les utilisateurs
+     */
+    private void setupComboBoxConverters() {
+        // Configurer l'affichage du ComboBox Sprint
+        sprintCombo.setConverter(new StringConverter<Sprint>() {
+            @Override
+            public String toString(Sprint sprint) {
+                if (sprint == null) {
+                    return "";
+                }
+                return sprint.getName() + " (" +
+                        (sprint.getProject() != null ? sprint.getProject().getName() : "Aucun projet") + ")";
+            }
+
+            @Override
+            public Sprint fromString(String string) {
+                return null; // Pas nécessaire pour notre cas d'usage
+            }
+        });
+
+        // Configurer l'affichage du ComboBox Utilisateur
+        assigneeCombo.setConverter(new StringConverter<Utilisateur>() {
+            @Override
+            public String toString(Utilisateur user) {
+                if (user == null) {
+                    return "";
+                }
+                return user.getNom() + " " + user.getPrenom() + " (" + user.getRole() + ")";
+            }
+
+            @Override
+            public Utilisateur fromString(String string) {
+                return null; // Pas nécessaire pour notre cas d'usage
+            }
         });
     }
 
