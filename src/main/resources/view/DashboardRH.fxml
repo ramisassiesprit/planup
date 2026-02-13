@@ -16,7 +16,6 @@
             <Label fx:id="userInfoLabel" text="Dashboard RH" style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;" wrapText="true"/>
             <Region prefHeight="20"/>
             <VBox spacing="5" VBox.vgrow="ALWAYS">
-                <Button text="Offres d'emploi" onAction="#showOffres" maxWidth="Infinity" styleClass="sidebar-button"/>
                 <Button text="Gestion des Congés" onAction="#showCongesManagement" maxWidth="Infinity" styleClass="sidebar-button"/>
                 <Button text="Planning Projets" onAction="#showProjects" maxWidth="Infinity" styleClass="sidebar-button"/>
                 <Button text="Planning Sprints" onAction="#showSprints" maxWidth="Infinity" styleClass="sidebar-button"/>
@@ -114,13 +113,13 @@
                 </HBox>
             </VBox>
             
-            <!-- Offre emploi-->
+            <!-- Welcome View -->
             <VBox fx:id="welcomeView" spacing="20" alignment="CENTER" visible="true">
                 <Label text="Bienvenue dans l'Espace RH" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
                 <VBox spacing="20" style="-fx-background-color: #f8fafc; -fx-padding: 30;" VBox.vgrow="ALWAYS">
                     <Label text="Gestion des Offres d'Emploi" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
 
-                    <!-- Form -->
+                    <!-- Form Section -->
                     <VBox spacing="10" styleClass="card" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10;">
                         <HBox spacing="15">
                             <VBox spacing="5" HBox.hgrow="ALWAYS">
@@ -129,7 +128,7 @@
                             </VBox>
                             <VBox spacing="5" HBox.hgrow="ALWAYS">
                                 <Label text="Type de contrat"/>
-                                <ComboBox fx:id="typeContratCombo" promptText="Selectionner" maxWidth="Infinity"/>
+                                <ComboBox fx:id="typeContratCombo" promptText="Sélectionner" maxWidth="Infinity"/>
                             </VBox>
                             <VBox spacing="5" HBox.hgrow="ALWAYS">
                                 <Label text="Salaire"/>
@@ -147,7 +146,7 @@
                             </VBox>
                             <VBox spacing="5" HBox.hgrow="ALWAYS">
                                 <Label text="Statut"/>
-                                <ComboBox fx:id="statutCombo" promptText="Selectionner" maxWidth="Infinity"/>
+                                <ComboBox fx:id="statutCombo" promptText="Sélectionner" maxWidth="Infinity"/>
                             </VBox>
                         </HBox>
                         <VBox spacing="5">
@@ -158,7 +157,7 @@
                             <Button text="Ajouter" onAction="#handleAdd" style="-fx-background-color: #22c55e; -fx-text-fill: white;"/>
                             <Button text="Modifier" onAction="#handleUpdate" style="-fx-background-color: #3b82f6; -fx-text-fill: white;"/>
                             <Button text="Supprimer" onAction="#handleDelete" style="-fx-background-color: #ef4444; -fx-text-fill: white;"/>
-                            <Button text="Reset" onAction="#handleClear" style="-fx-background-color: #64748b; -fx-text-fill: white;"/>
+                            <Button text="Réinitialiser" onAction="#handleClear" style="-fx-background-color: #64748b; -fx-text-fill: white;"/>
                         </HBox>
                     </VBox>
 

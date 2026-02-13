@@ -185,18 +185,18 @@ public class DashboardRHController implements Initializable {
         offre.setRh(currentUser);
 
         if (serviceOffre.ajouter(offre)) {
-            showAlert(Alert.AlertType.INFORMATION, "Succes", "Offre ajoutee avec succes.");
+            showAlert(Alert.AlertType.INFORMATION, "Succès", "Offre ajoutée avec succès.");
             loadOffres();
             handleClear();
         } else {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur de l'ajout de l'offre.");
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Échec de l'ajout de l'offre.");
         }
     }
 
     @FXML
     private void handleUpdate() {
         if (selectedOffre == null) {
-            showAlert(Alert.AlertType.WARNING, "Attention", " selectionner une offre a modifier.");
+            showAlert(Alert.AlertType.WARNING, "Attention", "Veuillez sélectionner une offre à modifier.");
             return;
         }
         if (!validateForm())
@@ -211,31 +211,31 @@ public class DashboardRHController implements Initializable {
         selectedOffre.setStatut(statutCombo.getValue());
 
         if (serviceOffre.modifier(selectedOffre)) {
-            showAlert(Alert.AlertType.INFORMATION, "Succes", "Offre modifiee avec succes.");
+            showAlert(Alert.AlertType.INFORMATION, "Succès", "Offre modifiée avec succès.");
             loadOffres();
             handleClear();
         } else {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur de la modification.");
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Échec de la modification.");
         }
     }
 
     @FXML
     private void handleDelete() {
         if (selectedOffre == null) {
-            showAlert(Alert.AlertType.WARNING, "Attention", " selectionner une offre a supprimer.");
+            showAlert(Alert.AlertType.WARNING, "Attention", "Veuillez sélectionner une offre à supprimer.");
             return;
         }
 
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "supprimer cette offre?",
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Voulez-vous vraiment supprimer cette offre?",
                 ButtonType.YES, ButtonType.NO);
         confirm.showAndWait().ifPresent(response -> {
             if (response == ButtonType.YES) {
                 if (serviceOffre.supprimer(selectedOffre.getIdOffre())) {
-                    showAlert(Alert.AlertType.INFORMATION, "Succes", "Offre supprimee avec succes.");
+                    showAlert(Alert.AlertType.INFORMATION, "Succès", "Offre supprimée avec succès.");
                     loadOffres();
                     handleClear();
                 } else {
-                    showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur de la suppression.");
+                    showAlert(Alert.AlertType.ERROR, "Erreur", "Échec de la suppression.");
                 }
             }
         });
@@ -483,16 +483,6 @@ public class DashboardRHController implements Initializable {
             if (welcomeView != null)
                 welcomeView.setVisible(false);
             refreshConges();
-        }
-    }
-
-    @FXML
-    private void showOffres() {
-        contentArea.getChildren().removeIf(node -> node != congesView && node != welcomeView);
-        if (welcomeView != null) {
-            welcomeView.setVisible(true);
-            if (congesView != null)
-                congesView.setVisible(false);
         }
     }
 

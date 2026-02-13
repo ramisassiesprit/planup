@@ -3,9 +3,11 @@ package Controller;
 import Entite.Tache;
 import Entite.Sprint;
 import Entite.Utilisateur;
+import Entite.Project;
 import Service.ServiceTache;
 import Service.ServiceUtilisateur;
 import Service.ServiceSprint;
+import Service.ServiceProject;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -43,6 +45,8 @@ public class TaskController {
     @FXML
     private TextField estimationField;
     @FXML
+    private ComboBox<Project> projectCombo;
+    @FXML
     private ComboBox<Sprint> sprintCombo;
     @FXML
     private ComboBox<Utilisateur> assigneeCombo;
@@ -57,12 +61,11 @@ public class TaskController {
     private Button btnDelete;
     @FXML
     private Button btnAssign;
-    @FXML
-    private Label taskCountLabel;
 
     private ServiceTache serviceTache = new ServiceTache();
     private ServiceUtilisateur serviceUtilisateur = new ServiceUtilisateur();
     private ServiceSprint serviceSprint = new ServiceSprint();
+    private ServiceProject serviceProject = new ServiceProject();
 
     private ObservableList<Tache> taskList = FXCollections.observableArrayList();
     private String userRole;
@@ -74,6 +77,7 @@ public class TaskController {
         colName.setCellValueFactory(new PropertyValueFactory<>("name"));
         setupStatusColumn();
         setupComboBoxConverters();
+        setupProjectSprintSync();
 
         taskTable.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
@@ -192,6 +196,55 @@ public class TaskController {
                 return null; // Pas nécessaire pour notre cas d'usage
             }
         });
+
+        // Configurer l'affichage du ComboBox Projet
+        projectCombo.setConverter(new StringConverter<Project>() {
+            @Override
+            public String toString(Project project) {
+                if (project == null) {
+                    return "";
+                }
+                return project.getName() + " (" + project.getType() + ")";
+            }
+
+            @Override
+            public Project fromString(String string) {
+                return null; // Pas nécessaire pour notre cas d'usage
+            }
+        });
+    }
+
+    /**
+     * Configure la synchronisation bidirectionnelle entre les ComboBox Projet et
+     * Sprint
+     */
+    private void setupProjectSprintSync() {
+        // Quand un sprint est sélectionné, afficher automatiquement son projet
+        sprintCombo.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null && newVal.getProject() != null) {
+                // Éviter les boucles infinies en vérifiant si le projet est déjà sélectionné
+                if (projectCombo.getValue() == null ||
+                        projectCombo.getValue().getIdProject() != newVal.getProject().getIdProject()) {
+                    projectCombo.setValue(newVal.getProject());
+                }
+            }
+        });
+
+        // Quand un projet est sélectionné, filtrer les sprints pour ce projet
+        projectCombo.valueProperty().addListener((obs, oldVal, newVal) -> {
+            try {
+                if (newVal != null) {
+                    // Filtrer les sprints par projet
+                    List<Sprint> sprintsFiltered = serviceSprint.getSprintsByProject(newVal.getIdProject());
+                    sprintCombo.setItems(FXCollections.observableArrayList(sprintsFiltered));
+                } else {
+                    // Si aucun projet sélectionné, afficher tous les sprints
+                    sprintCombo.setItems(FXCollections.observableArrayList(serviceSprint.readAll()));
+                }
+            } catch (SQLException e) {
+                System.err.println("Erreur lors du filtrage des sprints : " + e.getMessage());
+            }
+        });
     }
 
     private void loadData() {
@@ -212,19 +265,11 @@ public class TaskController {
                         .collect(Collectors.toList());
                 assigneeCombo.setItems(FXCollections.observableArrayList(users));
 
+                projectCombo.setItems(FXCollections.observableArrayList(serviceProject.readAll()));
                 sprintCombo.setItems(FXCollections.observableArrayList(serviceSprint.readAll()));
             }
-
-            updateTaskCount();
         } catch (SQLException e) {
             System.err.println("Error loading tasks: " + e.getMessage());
-        }
-    }
-
-    private void updateTaskCount() {
-        if (taskCountLabel != null) {
-            int count = taskList.size();
-            taskCountLabel.setText(count + (count <= 1 ? " tâche" : " tâches"));
         }
     }
 
@@ -241,6 +286,16 @@ public class TaskController {
             for (Sprint s : sprintCombo.getItems()) {
                 if (s.getIdSprint() == t.getSprint().getIdSprint()) {
                     sprintCombo.setValue(s);
+                    break;
+                }
+            }
+        }
+
+        // Match Project in combo (le projet du sprint)
+        if (t.getSprint() != null && t.getSprint().getProject() != null) {
+            for (Project p : projectCombo.getItems()) {
+                if (p.getIdProject() == t.getSprint().getProject().getIdProject()) {
+                    projectCombo.setValue(p);
                     break;
                 }
             }
@@ -350,6 +405,7 @@ public class TaskController {
         deadlinePicker.setValue(null);
         priorityField.clear();
         estimationField.clear();
+        projectCombo.setValue(null);
         sprintCombo.setValue(null);
         assigneeCombo.setValue(null);
         taskTable.getSelectionModel().clearSelection();
