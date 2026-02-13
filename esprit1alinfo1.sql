@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 22, 2026 at 11:40 PM
+-- Generation Time: Feb 13, 2026 at 09:40 AM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.0.30
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -45,7 +45,8 @@ CREATE TABLE `conge` (
 --
 
 INSERT INTO `conge` (`id_conge`, `cin`, `type`, `date_debut`, `date_fin`, `nbr_jours`, `justificatif`, `statut`, `solde_conge`, `conge_solde`) VALUES
-(1, 12345678, 'ANNUEL', '2026-02-01', '2026-02-05', 5, 'justif.pdf', 'EN_ATTENTE', 18, NULL);
+(1, 12345678, 'ANNUEL', '2026-02-01', '2026-02-05', 5, 'justif.pdf', 'ACCEPTE', 18, NULL),
+(2, 13034567, 'SANS_SOLDE', '2026-02-12', '2026-02-15', 3, 'djerba', 'ACCEPTE', NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -71,7 +72,9 @@ CREATE TABLE `offre_emploi` (
 --
 
 INSERT INTO `offre_emploi` (`id_offre`, `titre`, `description`, `profil_recherche`, `type_contrat`, `salaire`, `localisation`, `date_publication`, `statut`, `cin_rh`) VALUES
-(1, 'Dev Java', 'Participation au dev du projet ERP', 'Java, MySQL, UML', 'CDI', 2500.00, 'Tunis', '2026-01-22', 'OUVERTE', 87654321);
+(1, 'Dev Java', 'Participation au dev du projet ERP', 'Java, MySQL, UML', 'CDI', 2500.00, 'Tunis', '2026-01-22', 'OUVERTE', 87654321),
+(2, 'Dev Java', 'Participation au dev du projet ERP', 'Java, MySQL, UML', 'CDI', 2500.00, 'Tunis', '2026-02-12', 'OUVERTE', 11111111),
+(3, 'titre', 'alternace w moto5lsch', 'dev', 'CDI', 150.00, 'hayzouhour', '2026-02-12', 'En cours', 11111111);
 
 -- --------------------------------------------------------
 
@@ -91,7 +94,9 @@ CREATE TABLE `project` (
 
 INSERT INTO `project` (`id_project`, `name`, `type`) VALUES
 (1, 'Projet Alpha', 'Web'),
-(2, 'Projet Beta', 'Mobile');
+(2, 'Projet Beta', 'Mobile'),
+(3, 'Nouveau Projet de Test', 'Desktop'),
+(4, 'facebook', 'social web');
 
 -- --------------------------------------------------------
 
@@ -111,7 +116,10 @@ CREATE TABLE `sprint` (
 
 INSERT INTO `sprint` (`id_sprint`, `name`, `id_project`) VALUES
 (1, 'Sprint 1', 1),
-(2, 'Sprint 2', 1);
+(2, 'Sprint 2', 1),
+(3, 'Sprint de Test', 3),
+(4, 'messagerie', 4),
+(5, 'messagerie', 4);
 
 -- --------------------------------------------------------
 
@@ -160,8 +168,15 @@ CREATE TABLE `utilisateur` (
 --
 
 INSERT INTO `utilisateur` (`cin`, `nom`, `prenom`, `email`, `mot_de_passe`, `num_tel`, `role`) VALUES
+(1447708, 'man', 'man', 'man', 'man', '88888888', 'MANAGER'),
+(1777088, 'dev', 'dev', 'dev', 'dev', '99999907', 'DEVELOPPEUR'),
+(11111111, 'rh', 'rh', 'rh', 'rh', '44444444', 'RH'),
+(11111162, 'emp', 'emp', 'emp', 'emp', '07774419', 'EMPLOYE'),
 (12345678, 'Ben Ali', 'Mohamed', 'mohamed.benali@example.com', 'password', '12345678', 'EMPLOYE'),
-(87654321, 'Ben Amor', 'Sana', 'sana.benamor@example.com', 'adminpass', '98765432', 'RH');
+(13034567, 'brahmi', 'feres', 'feres', 'feres', '58804300', 'ADMIN'),
+(66666666, 'int', 'int', 'int', 'int', '78945612', 'INTEGRATEUR'),
+(87654321, 'Ben Amor', 'Sana', 'sana.benamor@example.com', 'adminpass', '98765432', 'RH'),
+(880476100, 'ahmed', 'hammouda', 'benhammouda@emp.tn', 'desturbed', '21703500', 'DEVELOPPEUR');
 
 --
 -- Indexes for dumped tables
@@ -217,25 +232,25 @@ ALTER TABLE `utilisateur`
 -- AUTO_INCREMENT for table `conge`
 --
 ALTER TABLE `conge`
-  MODIFY `id_conge` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_conge` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `offre_emploi`
 --
 ALTER TABLE `offre_emploi`
-  MODIFY `id_offre` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_offre` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `project`
 --
 ALTER TABLE `project`
-  MODIFY `id_project` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_project` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `sprint`
 --
 ALTER TABLE `sprint`
-  MODIFY `id_sprint` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_sprint` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `tache`

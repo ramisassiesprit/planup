@@ -57,6 +57,8 @@ public class TaskController {
     private Button btnDelete;
     @FXML
     private Button btnAssign;
+    @FXML
+    private Label taskCountLabel;
 
     private ServiceTache serviceTache = new ServiceTache();
     private ServiceUtilisateur serviceUtilisateur = new ServiceUtilisateur();
@@ -212,8 +214,17 @@ public class TaskController {
 
                 sprintCombo.setItems(FXCollections.observableArrayList(serviceSprint.readAll()));
             }
+
+            updateTaskCount();
         } catch (SQLException e) {
             System.err.println("Error loading tasks: " + e.getMessage());
+        }
+    }
+
+    private void updateTaskCount() {
+        if (taskCountLabel != null) {
+            int count = taskList.size();
+            taskCountLabel.setText(count + (count <= 1 ? " tâche" : " tâches"));
         }
     }
 

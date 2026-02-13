@@ -4,55 +4,105 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
-<VBox spacing="20" style="-fx-background-color: #f8fafc; -fx-padding: 30;" xmlns:fx="http://javafx.com/fxml" fx:controller="Controller.TaskController">
-    <Label text="Gestion des Tâches" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
-
-    <HBox spacing="20" VBox.vgrow="ALWAYS">
-        <!-- Formulaire de CRUD (Admin/Manager) -->
-        <VBox fx:id="formContainer" spacing="10" prefWidth="350" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);">
-            <Label text="Détails de la Tâche" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
+<VBox spacing="20" styleClass="task-view-container" stylesheets="@TaskView.css" xmlns:fx="http://javafx.com/fxml" fx:controller="Controller.TaskController">
+    
+    <!-- Header -->
+    <Label text="📋 Gestion des Tâches" styleClass="task-header"/>
+    
+    <HBox spacing="25" VBox.vgrow="ALWAYS">
+        
+        <!-- ========== FORM PANEL ========== -->
+        <VBox fx:id="formContainer" spacing="12" prefWidth="380" styleClass="form-container">
             
-            <TextField fx:id="nameField" promptText="Nom de la tâche"/>
-            <TextArea fx:id="descArea" promptText="Description" prefRowCount="3"/>
-            <DatePicker fx:id="deadlinePicker" promptText="Date limite" maxWidth="Infinity"/>
-            <TextField fx:id="priorityField" promptText="Priorité (1-5)"/>
-            <TextField fx:id="estimationField" promptText="Estimation (heures)"/>
+            <Label text="✏️ Détails de la Tâche" styleClass="form-title"/>
             
-            <Label text="Sprint"/>
-            <ComboBox fx:id="sprintCombo" maxWidth="Infinity" promptText="Sélectionner Sprint"/>
+            <!-- Task Name -->
+            <VBox spacing="5">
+                <Label text="Nom de la tâche" styleClass="field-label"/>
+                <TextField fx:id="nameField" promptText="Ex: Développer la fonctionnalité X"/>
+            </VBox>
             
-            <Label text="Assignation (Manager)"/>
+            <!-- Description -->
+            <VBox spacing="5">
+                <Label text="Description" styleClass="field-label"/>
+                <TextArea fx:id="descArea" promptText="Décrivez la tâche en détail..." prefRowCount="3"/>
+            </VBox>
+            
+            <!-- Date & Priority Row -->
             <HBox spacing="10">
-                <ComboBox fx:id="assigneeCombo" maxWidth="Infinity" promptText="Assigner à..." HBox.hgrow="ALWAYS"/>
-                <Button fx:id="btnAssign" text="Assigner" onAction="#handleAssign" style="-fx-background-color: #f59e0b; -fx-text-fill: white;"/>
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label text="📅 Date limite" styleClass="field-label"/>
+                    <DatePicker fx:id="deadlinePicker" promptText="JJ/MM/AAAA" maxWidth="Infinity"/>
+                </VBox>
+                
+                <VBox spacing="5" prefWidth="100">
+                    <Label text="⭐ Priorité" styleClass="field-label"/>
+                    <TextField fx:id="priorityField" promptText="1-5"/>
+                </VBox>
             </HBox>
-
+            
+            <!-- Estimation -->
+            <VBox spacing="5">
+                <Label text="⏱️ Estimation (heures)" styleClass="field-label"/>
+                <TextField fx:id="estimationField" promptText="Ex: 8"/>
+            </VBox>
+            
+            <!-- Sprint -->
+            <VBox spacing="5">
+                <Label text="🚀 Sprint" styleClass="field-label"/>
+                <ComboBox fx:id="sprintCombo" maxWidth="Infinity" promptText="Sélectionner un sprint"/>
+            </VBox>
+            
+            <!-- Assignment Section -->
+            <VBox spacing="5">
+                <Label text="👤 Assignation (Manager)" styleClass="field-label"/>
+                <HBox spacing="10">
+                    <ComboBox fx:id="assigneeCombo" maxWidth="Infinity" promptText="Assigner à..." HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="btnAssign" text="Assigner" onAction="#handleAssign" styleClass="btn-assign"/>
+                </HBox>
+            </VBox>
+            
             <Separator/>
             
-            <HBox spacing="10" alignment="CENTER">
-                <Button fx:id="btnAdd" text="Ajouter" onAction="#handleAdd" style="-fx-background-color: #22c55e; -fx-text-fill: white;" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
-                <Button fx:id="btnUpdate" text="Modifier" onAction="#handleUpdate" style="-fx-background-color: #3b82f6; -fx-text-fill: white;" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
-            </HBox>
-            <HBox spacing="10" alignment="CENTER">
-                <Button fx:id="btnDelete" text="Supprimer" onAction="#handleDelete" style="-fx-background-color: #ef4444; -fx-text-fill: white;" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
-                <Button text="Vider" onAction="#handleClear" style="-fx-background-color: #64748b; -fx-text-fill: white;" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
-            </HBox>
+            <!-- Action Buttons -->
+            <VBox spacing="10">
+                <HBox spacing="10">
+                    <Button fx:id="btnAdd" text="➕ Ajouter" onAction="#handleAdd" styleClass="btn-add" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="btnUpdate" text="✏️ Modifier" onAction="#handleUpdate" styleClass="btn-update" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                </HBox>
+                <HBox spacing="10">
+                    <Button fx:id="btnDelete" text="🗑️ Supprimer" onAction="#handleDelete" styleClass="btn-delete" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                    <Button text="🔄 Vider" onAction="#handleClear" styleClass="btn-clear" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                </HBox>
+            </VBox>
+            
         </VBox>
-
-        <!-- Liste des tâches -->
+        
+        <!-- ========== TABLE PANEL ========== -->
         <VBox spacing="15" HBox.hgrow="ALWAYS">
-
-            <TableView fx:id="taskTable" VBox.vgrow="ALWAYS" style="-fx-background-radius: 10;">
+            
+            <!-- Table Header Info -->
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label text="📊 Liste des Tâches" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="taskCountLabel" text="0 tâches" style="-fx-font-size: 13px; -fx-text-fill: #64748b;"/>
+            </HBox>
+            
+            <!-- Table View -->
+            <TableView fx:id="taskTable" VBox.vgrow="ALWAYS">
                 <columns>
-                    <TableColumn fx:id="colId" text="ID" prefWidth="50"/>
-                    <TableColumn fx:id="colName" text="Titre" prefWidth="200"/>
-                    <TableColumn fx:id="colStatus" text="Statut" prefWidth="150"/>
-                    <TableColumn fx:id="colAssignee" text="Assigné à" prefWidth="150"/>
+                    <TableColumn fx:id="colId" text="ID" prefWidth="60" style="-fx-alignment: CENTER;"/>
+                    <TableColumn fx:id="colName" text="Titre" prefWidth="250"/>
+                    <TableColumn fx:id="colStatus" text="Statut" prefWidth="180" style="-fx-alignment: CENTER;"/>
+                    <TableColumn fx:id="colAssignee" text="Assigné à" prefWidth="180"/>
                 </columns>
                 <columnResizePolicy>
                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
                 </columnResizePolicy>
             </TableView>
+            
         </VBox>
+        
     </HBox>
+    
 </VBox>
