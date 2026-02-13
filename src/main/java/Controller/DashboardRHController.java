@@ -270,6 +270,16 @@ public class DashboardRHController implements Initializable {
         return true;
     }
 
+        @FXML
+    private void showOffres() {
+        contentArea.getChildren().removeIf(node -> node != congesView && node != welcomeView);
+        if (welcomeView != null) {
+            welcomeView.setVisible(true);
+            if (congesView != null)
+                congesView.setVisible(false);
+        }
+    }
+
 
     private void setupCongesTable() {
         idCongeColumn.setCellValueFactory(new PropertyValueFactory<>("idConge"));

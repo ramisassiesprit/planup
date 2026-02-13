@@ -16,6 +16,7 @@
             <Label fx:id="userInfoLabel" text="Dashboard RH" style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;" wrapText="true"/>
             <Region prefHeight="20"/>
             <VBox spacing="5" VBox.vgrow="ALWAYS">
+                <Button text="Offres d'emploi" onAction="#showOffres" maxWidth="Infinity" styleClass="sidebar-button"/>
                 <Button text="Gestion des Congés" onAction="#showCongesManagement" maxWidth="Infinity" styleClass="sidebar-button"/>
                 <Button text="Planning Projets" onAction="#showProjects" maxWidth="Infinity" styleClass="sidebar-button"/>
                 <Button text="Planning Sprints" onAction="#showSprints" maxWidth="Infinity" styleClass="sidebar-button"/>
@@ -113,13 +114,13 @@
                 </HBox>
             </VBox>
             
-            <!-- Welcome View -->
+                <!-- Offre emploi-->
             <VBox fx:id="welcomeView" spacing="20" alignment="CENTER" visible="true">
                 <Label text="Bienvenue dans l'Espace RH" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
                 <VBox spacing="20" style="-fx-background-color: #f8fafc; -fx-padding: 30;" VBox.vgrow="ALWAYS">
                     <Label text="Gestion des Offres d'Emploi" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
 
-                    <!-- Form Section -->
+                    <!-- Form -->
                     <VBox spacing="10" styleClass="card" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10;">
                         <HBox spacing="15">
                             <VBox spacing="5" HBox.hgrow="ALWAYS">
