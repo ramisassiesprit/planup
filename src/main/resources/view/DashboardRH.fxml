@@ -129,7 +129,7 @@
                             </VBox>
                             <VBox spacing="5" HBox.hgrow="ALWAYS">
                                 <Label text="Type de contrat"/>
-                                <ComboBox fx:id="typeContratCombo" promptText="Sélectionner" maxWidth="Infinity"/>
+                                <ComboBox fx:id="typeContratCombo" promptText="Selectionner" maxWidth="Infinity"/>
                             </VBox>
                             <VBox spacing="5" HBox.hgrow="ALWAYS">
                                 <Label text="Salaire"/>
