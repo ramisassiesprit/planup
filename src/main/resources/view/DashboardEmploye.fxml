@@ -8,6 +8,7 @@
     <VBox spacing="10" styleClass="sidebar" prefWidth="300" style="-fx-background-color: #1e293b; -fx-padding: 20;">
         <Label fx:id="userInfoLabel" text="Dashboard EMPLOYE" style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;" wrapText="true"/>
         
+        <Button text="Profil" onAction="#showProfile" maxWidth="Infinity" style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-weight: bold;"/>
         <Button text="Déconnexion" onAction="#logout" maxWidth="Infinity" style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold;"/>
     </VBox>
  </left>

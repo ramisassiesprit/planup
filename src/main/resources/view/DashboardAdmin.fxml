@@ -18,6 +18,7 @@
                 <Button text="Tâches" onAction="#showTasks" maxWidth="Infinity" styleClass="sidebar-button"/>
                 <Button text="Utilisateurs" onAction="#showUsers" maxWidth="Infinity" styleClass="sidebar-button"/>
             </VBox>
+            <Button text="Profil" onAction="#showProfile" maxWidth="Infinity" style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-weight: bold;"/>
             <Button text="Déconnexion" onAction="#logout" maxWidth="Infinity" style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold;"/>
         </VBox>
     </left>

@@ -30,6 +30,18 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class DashboardAdminController {
+    @FXML
+    private void showProfile() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/ProfileView.fxml"));
+            Parent profileRoot = loader.load();
+            ProfileController controller = loader.getController();
+            controller.setUtilisateur(loggedInAdmin);
+            contentArea.getChildren().setAll(profileRoot);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @FXML
     private javafx.scene.control.ComboBox<String> roleFilterComboBox;

@@ -29,6 +29,18 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 public class DashboardRHController implements Initializable {
+    @FXML
+    private void showProfile() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/ProfileView.fxml"));
+            Parent profileRoot = loader.load();
+            ProfileController controller = loader.getController();
+            controller.setUtilisateur(currentUser);
+            contentArea.getChildren().setAll(profileRoot);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @FXML
     private StackPane contentArea;

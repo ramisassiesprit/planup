@@ -13,6 +13,18 @@ import java.io.IOException;
 import java.net.URL;
 
 public class DashboardDeveloppeurController {
+    @FXML
+    private void showProfile() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/ProfileView.fxml"));
+            Parent profileRoot = loader.load();
+            ProfileController controller = loader.getController();
+            controller.setUtilisateur(loggedInUser);
+            contentArea.getChildren().setAll(profileRoot);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @FXML
     private StackPane contentArea;

@@ -22,6 +22,7 @@
                 <Button text="Planning Sprints" onAction="#showSprints" maxWidth="Infinity" styleClass="sidebar-button"/>
             </VBox>
             <Region VBox.vgrow="ALWAYS"/>
+            <Button text="Profil" onAction="#showProfile" maxWidth="Infinity" style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-weight: bold;"/>
             <Button text="Déconnexion" onAction="#logout" maxWidth="Infinity" style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold;"/>
         </VBox>
     </left>
