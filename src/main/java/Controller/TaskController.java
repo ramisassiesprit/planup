@@ -8,12 +8,18 @@ import Service.ServiceTache;
 import Service.ServiceUtilisateur;
 import Service.ServiceSprint;
 import Service.ServiceProject;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 import javafx.util.StringConverter;
 
 import java.sql.SQLException;
@@ -24,15 +30,11 @@ import java.util.stream.Collectors;
 public class TaskController {
 
     @FXML
-    private TableView<Tache> taskTable;
+    private ListView<Tache> pasEncoreFaiteList;
     @FXML
-    private TableColumn<Tache, Integer> colId;
+    private ListView<Tache> enCoursList;
     @FXML
-    private TableColumn<Tache, String> colName;
-    @FXML
-    private TableColumn<Tache, String> colStatus;
-    @FXML
-    private TableColumn<Tache, String> colAssignee;
+    private ListView<Tache> termineeList;
 
     @FXML
     private TextField nameField;
@@ -54,6 +56,8 @@ public class TaskController {
     @FXML
     private VBox formContainer;
     @FXML
+    private ScrollPane formScrollPane;
+    @FXML
     private Button btnAdd;
     @FXML
     private Button btnUpdate;
@@ -73,17 +77,12 @@ public class TaskController {
 
     @FXML
     public void initialize() {
-        colId.setCellValueFactory(new PropertyValueFactory<>("idTache"));
-        colName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        setupStatusColumn();
         setupComboBoxConverters();
         setupProjectSprintSync();
 
-        taskTable.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null) {
-                populateForm(newVal);
-            }
-        });
+        setupListView(pasEncoreFaiteList, "PAS_ENCORE_FAITE");
+        setupListView(enCoursList, "EN_COURS");
+        setupListView(termineeList, "TERMINEE");
 
         loadData();
     }
@@ -93,9 +92,11 @@ public class TaskController {
         this.currentUser = user;
 
         boolean canCrud = "ADMIN".equalsIgnoreCase(role) || "MANAGER".equalsIgnoreCase(role);
-        boolean isDevOrInt = "DEVELOPPEUR".equalsIgnoreCase(role) || "INTEGRATEUR".equalsIgnoreCase(role);
 
-        if (formContainer != null) {
+        if (formScrollPane != null) {
+            formScrollPane.setVisible(canCrud);
+            formScrollPane.setManaged(canCrud);
+        } else if (formContainer != null) {
             formContainer.setVisible(canCrud);
             formContainer.setManaged(canCrud);
         }
@@ -105,140 +106,217 @@ public class TaskController {
         }
 
         loadData();
-        taskTable.refresh(); // Pour forcer la mise à jour des cellules (ComboBox)
     }
 
-    private void setupStatusColumn() {
-        colStatus.setCellValueFactory(new PropertyValueFactory<>("statut"));
-        colStatus.setCellFactory(column -> new TableCell<Tache, String>() {
-            private final ComboBox<String> comboBox = new ComboBox<>(
-                    FXCollections.observableArrayList("PAS_ENCORE_FAITE", "EN_COURS", "DEJA_FAITE"));
+    private void setupListView(ListView<Tache> listView, String targetStatus) {
+        listView.setCellFactory(lv -> new TaskListCell());
 
-            {
-                comboBox.setMaxWidth(Double.MAX_VALUE);
-                comboBox.setOnAction(event -> {
-                    Tache task = getTableView().getItems().get(getIndex());
-                    String newStatus = comboBox.getValue();
-                    if (task != null && newStatus != null && !newStatus.equals(task.getStatut())) {
-                        try {
-                            if (serviceTache.updateStatus(task.getIdTache(), newStatus)) {
-                                task.setStatut(newStatus);
-                                System.out.println("Statut mis à jour pour la tâche " + task.getIdTache());
-                            }
-                        } catch (SQLException e) {
-                            showAlert(Alert.AlertType.ERROR, "Erreur", "Mise à jour échouée", e.getMessage());
-                        }
-                    }
-                });
+        listView.setOnDragOver(event -> {
+            if (event.getGestureSource() != listView && event.getDragboard().hasString()) {
+                event.acceptTransferModes(TransferMode.MOVE);
             }
+            event.consume();
+        });
 
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setGraphic(null);
-                } else {
-                    comboBox.setValue(item);
-                    // On n'autorise la modification que pour les rôles concernés ou si on veut que
-                    // tout le monde puisse
-                    // L'utilisateur a demandé le design pour Dev/Int, mais on peut le rendre
-                    // général ou restreint
-                    boolean canEdit = "DEVELOPPEUR".equalsIgnoreCase(userRole)
-                            || "INTEGRATEUR".equalsIgnoreCase(userRole)
-                            || "MANAGER".equalsIgnoreCase(userRole)
-                            || "ADMIN".equalsIgnoreCase(userRole);
-                    comboBox.setDisable(!canEdit);
-                    setGraphic(comboBox);
+        listView.setOnDragDropped(event -> {
+            Dragboard db = event.getDragboard();
+            boolean success = false;
+            if (db.hasString()) {
+                int taskId = Integer.parseInt(db.getString());
+                try {
+                    if (serviceTache.updateStatus(taskId, targetStatus)) {
+                        success = true;
+                        loadData();
+                    }
+                } catch (SQLException e) {
+                    showAlert(Alert.AlertType.ERROR, "Erreur", "Mise à jour échouée", e.getMessage());
                 }
             }
+            event.setDropCompleted(success);
+            event.consume();
         });
 
-        colAssignee.setCellValueFactory(cellData -> {
-            Utilisateur u = cellData.getValue().getAffecte();
-            return new javafx.beans.property.SimpleStringProperty(u != null ? u.getNom() : "Non assignée");
+        listView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                if (listView != pasEncoreFaiteList)
+                    pasEncoreFaiteList.getSelectionModel().clearSelection();
+                if (listView != enCoursList)
+                    enCoursList.getSelectionModel().clearSelection();
+                if (listView != termineeList)
+                    termineeList.getSelectionModel().clearSelection();
+                populateForm(newVal);
+            }
         });
     }
 
-    /**
-     * Configure les StringConverter pour les ComboBox afin d'afficher correctement
-     * les sprints et les utilisateurs
-     */
+    private class TaskListCell extends ListCell<Tache> {
+        private VBox content;
+        private Label nameLabel;
+        private Label assigneeLabel;
+        private Label timerLabel;
+        private Timeline timeline;
+        private int remainingSeconds;
+
+        public TaskListCell() {
+            super();
+            nameLabel = new Label();
+            nameLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+
+            assigneeLabel = new Label();
+            assigneeLabel.setStyle("-fx-text-fill: #64748b; -fx-font-size: 12px;");
+
+            timerLabel = new Label();
+
+            content = new VBox(5, nameLabel, assigneeLabel, timerLabel);
+            content.setPadding(new Insets(10));
+            content.setStyle(
+                    "-fx-background-color: white; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 3, 0, 0, 1);");
+
+            // Drag functionality
+            setOnDragDetected(event -> {
+                if (getItem() == null)
+                    return;
+                boolean canEdit = "DEVELOPPEUR".equalsIgnoreCase(userRole)
+                        || "INTEGRATEUR".equalsIgnoreCase(userRole)
+                        || "MANAGER".equalsIgnoreCase(userRole)
+                        || "ADMIN".equalsIgnoreCase(userRole);
+                if (!canEdit)
+                    return;
+
+                Dragboard db = startDragAndDrop(TransferMode.MOVE);
+                ClipboardContent cc = new ClipboardContent();
+                cc.putString(String.valueOf(getItem().getIdTache()));
+                db.setContent(cc);
+                event.consume();
+            });
+        }
+
+        @Override
+        protected void updateItem(Tache item, boolean empty) {
+            super.updateItem(item, empty);
+            if (empty || item == null) {
+                setGraphic(null);
+                if (timeline != null) {
+                    timeline.stop();
+                    timeline = null;
+                }
+            } else {
+                nameLabel.setText(item.getName());
+                String assignee = item.getAffecte() != null ? item.getAffecte().getNom() : "Non assigné";
+                assigneeLabel.setText("👤 " + assignee + " | Priorité: " + item.getPriorite());
+
+                if ("EN_COURS".equals(item.getStatut())) {
+                    timerLabel.setVisible(true);
+                    timerLabel.setManaged(true);
+
+                    if (timeline != null)
+                        timeline.stop();
+
+                    // L'estimation est en heures
+                    remainingSeconds = item.getEstimation() * 3600;
+
+                    timeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
+                        remainingSeconds--;
+                        updateTimerLabel();
+                    }));
+                    timeline.setCycleCount(Timeline.INDEFINITE);
+                    timeline.play();
+                    updateTimerLabel();
+                } else {
+                    timerLabel.setVisible(false);
+                    timerLabel.setManaged(false);
+                    if (timeline != null) {
+                        timeline.stop();
+                        timeline = null;
+                    }
+                }
+
+                setGraphic(content);
+                // Ensure correct background (transparent container for cell)
+                setStyle("-fx-background-color: transparent; -fx-padding: 4;");
+            }
+        }
+
+        private void updateTimerLabel() {
+            int absSeconds = Math.abs(remainingSeconds);
+            int h = absSeconds / 3600;
+            int m = (absSeconds % 3600) / 60;
+            int s = absSeconds % 60;
+            String timeStr = String.format("%02d:%02d:%02d", h, m, s);
+
+            if (remainingSeconds >= 0) {
+                timerLabel.setText("⏳ " + timeStr);
+                timerLabel.setStyle(
+                        "-fx-background-color: #dcfce7; -fx-text-fill: #166534; -fx-font-weight: bold; -fx-padding: 4 8; -fx-background-radius: 4; -fx-font-size: 11px;");
+            } else {
+                timerLabel.setText("⏳ - " + timeStr);
+                timerLabel.setStyle(
+                        "-fx-background-color: #fee2e2; -fx-text-fill: #991b1b; -fx-font-weight: bold; -fx-padding: 4 8; -fx-background-radius: 4; -fx-font-size: 11px;");
+            }
+        }
+    }
+
     private void setupComboBoxConverters() {
-        // Configurer l'affichage du ComboBox Sprint
         sprintCombo.setConverter(new StringConverter<Sprint>() {
             @Override
             public String toString(Sprint sprint) {
-                if (sprint == null) {
+                if (sprint == null)
                     return "";
-                }
-                return sprint.getName() + " (" +
-                        (sprint.getProject() != null ? sprint.getProject().getName() : "Aucun projet") + ")";
+                return sprint.getName() + " ("
+                        + (sprint.getProject() != null ? sprint.getProject().getName() : "Aucun projet") + ")";
             }
 
             @Override
             public Sprint fromString(String string) {
-                return null; // Pas nécessaire pour notre cas d'usage
+                return null;
             }
         });
 
-        // Configurer l'affichage du ComboBox Utilisateur
         assigneeCombo.setConverter(new StringConverter<Utilisateur>() {
             @Override
             public String toString(Utilisateur user) {
-                if (user == null) {
+                if (user == null)
                     return "";
-                }
                 return user.getNom() + " " + user.getPrenom() + " (" + user.getRole() + ")";
             }
 
             @Override
             public Utilisateur fromString(String string) {
-                return null; // Pas nécessaire pour notre cas d'usage
+                return null;
             }
         });
 
-        // Configurer l'affichage du ComboBox Projet
         projectCombo.setConverter(new StringConverter<Project>() {
             @Override
             public String toString(Project project) {
-                if (project == null) {
+                if (project == null)
                     return "";
-                }
                 return project.getName() + " (" + project.getType() + ")";
             }
 
             @Override
             public Project fromString(String string) {
-                return null; // Pas nécessaire pour notre cas d'usage
+                return null;
             }
         });
     }
 
-    /**
-     * Configure la synchronisation bidirectionnelle entre les ComboBox Projet et
-     * Sprint
-     */
     private void setupProjectSprintSync() {
-        // Quand un sprint est sélectionné, afficher automatiquement son projet
         sprintCombo.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null && newVal.getProject() != null) {
-                // Éviter les boucles infinies en vérifiant si le projet est déjà sélectionné
-                if (projectCombo.getValue() == null ||
-                        projectCombo.getValue().getIdProject() != newVal.getProject().getIdProject()) {
+                if (projectCombo.getValue() == null
+                        || projectCombo.getValue().getIdProject() != newVal.getProject().getIdProject()) {
                     projectCombo.setValue(newVal.getProject());
                 }
             }
         });
 
-        // Quand un projet est sélectionné, filtrer les sprints pour ce projet
         projectCombo.valueProperty().addListener((obs, oldVal, newVal) -> {
             try {
                 if (newVal != null) {
-                    // Filtrer les sprints par projet
                     List<Sprint> sprintsFiltered = serviceSprint.getSprintsByProject(newVal.getIdProject());
                     sprintCombo.setItems(FXCollections.observableArrayList(sprintsFiltered));
                 } else {
-                    // Si aucun projet sélectionné, afficher tous les sprints
                     sprintCombo.setItems(FXCollections.observableArrayList(serviceSprint.readAll()));
                 }
             } catch (SQLException e) {
@@ -256,7 +334,18 @@ public class TaskController {
             } else {
                 taskList.addAll(serviceTache.readAll());
             }
-            taskTable.setItems(taskList);
+
+            pasEncoreFaiteList.setItems(FXCollections.observableArrayList(
+                    taskList.stream().filter(t -> "PAS_ENCORE_FAITE".equalsIgnoreCase(t.getStatut()))
+                            .collect(Collectors.toList())));
+
+            enCoursList.setItems(FXCollections.observableArrayList(
+                    taskList.stream().filter(t -> "EN_COURS".equalsIgnoreCase(t.getStatut()))
+                            .collect(Collectors.toList())));
+
+            termineeList.setItems(FXCollections.observableArrayList(
+                    taskList.stream().filter(t -> "TERMINEE".equalsIgnoreCase(t.getStatut())
+                            || "DEJA_FAITE".equalsIgnoreCase(t.getStatut())).collect(Collectors.toList())));
 
             if ("MANAGER".equalsIgnoreCase(userRole) || "ADMIN".equalsIgnoreCase(userRole)) {
                 List<Utilisateur> users = serviceUtilisateur.readAll().stream()
@@ -273,6 +362,17 @@ public class TaskController {
         }
     }
 
+    private Tache getSelectedTask() {
+        Tache t = pasEncoreFaiteList.getSelectionModel().getSelectedItem();
+        if (t != null)
+            return t;
+        t = enCoursList.getSelectionModel().getSelectedItem();
+        if (t != null)
+            return t;
+        t = termineeList.getSelectionModel().getSelectedItem();
+        return t;
+    }
+
     private void populateForm(Tache t) {
         nameField.setText(t.getName());
         descArea.setText(t.getDescription());
@@ -281,7 +381,6 @@ public class TaskController {
         priorityField.setText(String.valueOf(t.getPriorite()));
         estimationField.setText(String.valueOf(t.getEstimation()));
 
-        // Match Sprint in combo
         if (t.getSprint() != null) {
             for (Sprint s : sprintCombo.getItems()) {
                 if (s.getIdSprint() == t.getSprint().getIdSprint()) {
@@ -291,7 +390,6 @@ public class TaskController {
             }
         }
 
-        // Match Project in combo (le projet du sprint)
         if (t.getSprint() != null && t.getSprint().getProject() != null) {
             for (Project p : projectCombo.getItems()) {
                 if (p.getIdProject() == t.getSprint().getProject().getIdProject()) {
@@ -301,7 +399,6 @@ public class TaskController {
             }
         }
 
-        // Match Assignee in combo
         if (t.getAffecte() != null) {
             for (Utilisateur u : assigneeCombo.getItems()) {
                 if (u.getCin() == t.getAffecte().getCin()) {
@@ -340,7 +437,7 @@ public class TaskController {
 
     @FXML
     private void handleUpdate() {
-        Tache selected = taskTable.getSelectionModel().getSelectedItem();
+        Tache selected = getSelectedTask();
         if (selected == null)
             return;
 
@@ -366,7 +463,7 @@ public class TaskController {
 
     @FXML
     private void handleDelete() {
-        Tache selected = taskTable.getSelectionModel().getSelectedItem();
+        Tache selected = getSelectedTask();
         if (selected == null)
             return;
 
@@ -383,7 +480,7 @@ public class TaskController {
 
     @FXML
     private void handleAssign() {
-        Tache selected = taskTable.getSelectionModel().getSelectedItem();
+        Tache selected = getSelectedTask();
         Utilisateur user = assigneeCombo.getValue();
         if (selected == null || user == null)
             return;
@@ -408,7 +505,9 @@ public class TaskController {
         projectCombo.setValue(null);
         sprintCombo.setValue(null);
         assigneeCombo.setValue(null);
-        taskTable.getSelectionModel().clearSelection();
+        pasEncoreFaiteList.getSelectionModel().clearSelection();
+        enCoursList.getSelectionModel().clearSelection();
+        termineeList.getSelectionModel().clearSelection();
     }
 
     private void showAlert(Alert.AlertType type, String title, String header, String content) {

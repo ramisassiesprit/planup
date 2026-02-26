@@ -142,7 +142,7 @@ INSERT INTO `tache` (`id_tache`, `name`, `description`, `date_limite`, `duree`, 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `utilisateur`
+-- Table structure for table `lisateur`
 --
 
 CREATE TABLE `utilisateur` (
