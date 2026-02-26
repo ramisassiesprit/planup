@@ -124,8 +124,8 @@ public class CongeService implements ICongeService {
     public boolean accepterConge(int congeId, int rhCin, String commentaire) {
         ServiceUtilisateur us = new ServiceUtilisateur();
         Utilisateur rh = us.findByCin(rhCin);
-        if (rh == null || !"RH".equalsIgnoreCase(rh.getRole())) {
-            System.out.println("Action réservée au RH.");
+        if (rh == null || (!"RH".equalsIgnoreCase(rh.getRole()) && !"ADMIN".equalsIgnoreCase(rh.getRole()))) {
+            System.out.println("Action réservée au RH ou ADMIN.");
             return false;
         }
         Conge c = getById(congeId);
@@ -152,8 +152,8 @@ public class CongeService implements ICongeService {
     public boolean refuserConge(int congeId, int rhCin, String commentaire) {
         ServiceUtilisateur us = new ServiceUtilisateur();
         Utilisateur rh = us.findByCin(rhCin);
-        if (rh == null || !"RH".equalsIgnoreCase(rh.getRole())) {
-            System.out.println("Action réservée au RH.");
+        if (rh == null || (!"RH".equalsIgnoreCase(rh.getRole()) && !"ADMIN".equalsIgnoreCase(rh.getRole()))) {
+            System.out.println("Action réservée au RH ou ADMIN.");
             return false;
         }
         Conge c = getById(congeId);
@@ -199,5 +199,31 @@ public class CongeService implements ICongeService {
             System.out.println("Erreur SQL annulerConge: " + e.getMessage());
             return false;
         }
+    }
+
+    @Override
+    public int calculateSoldeRestant(int cin) {
+        // Supposons que l'employé gagne 1.75 jours par mois
+        // Pour cet exemple, on considère qu'il a travaillé 12 mois par défaut (ou on pourrait calculer depuis une date fixe)
+        double joursAcquisParMois = 1.75;
+        int nbMoisTravailles = 12; // Valeur par défaut car date_embauche absente
+        
+        int totalAcquis = (int) (nbMoisTravailles * joursAcquisParMois);
+        
+        // Calculer les jours déjà pris (Acceptés seulement)
+        int joursPris = 0;
+        String sql = "SELECT SUM(nbr_jours) FROM conge WHERE cin = ? AND statut = 'ACCEPTE'";
+        try (Connection con = DataSource.getInstance().getCon(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, cin);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    joursPris = rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur calculateSoldeRestant: " + e.getMessage());
+        }
+        
+        return totalAcquis - joursPris;
     }
 }

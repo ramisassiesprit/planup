@@ -31,6 +31,7 @@
                 <Button text="📁  Mes Projets"  onAction="#showProjects"  maxWidth="Infinity" styleClass="sidebar-button"/>
                 <Button text="🔄  Mes Sprints"   onAction="#showSprints"   maxWidth="Infinity" styleClass="sidebar-button"/>
                 <Button text="✅  Mes Tâches"     onAction="#showMyTasks"   maxWidth="Infinity" styleClass="sidebar-button"/>
+                <Button text="🏖️  Gestion des Congés" onAction="#showCongesManagement" maxWidth="Infinity" styleClass="sidebar-button"/>
             </VBox>
 
             <VBox spacing="6" style="-fx-padding: 12;">

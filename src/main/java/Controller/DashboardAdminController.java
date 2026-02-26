@@ -263,6 +263,19 @@ public class DashboardAdminController {
     }
 
     @FXML
+    private void showCongesManagement() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/CongesView.fxml"));
+            Parent congesRoot = loader.load();
+            CongesController controller = loader.getController();
+            controller.setLoggedInUser(loggedInAdmin);
+            contentArea.getChildren().setAll(congesRoot);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
     private void logout() {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/view/Login.fxml"));
