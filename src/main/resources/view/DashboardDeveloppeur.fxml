@@ -5,28 +5,79 @@
 <?import javafx.geometry.Insets?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="Controller.DashboardDeveloppeurController"
-            stylesheets="@../assets/style.css" prefWidth="1024" prefHeight="768">
-    
-    <!-- Sidebar -->
+            stylesheets="@../assets/style.css" prefWidth="1200" prefHeight="800">
+
+    <!-- ══ SIDEBAR ══ -->
     <left>
-        <VBox spacing="10" styleClass="sidebar" prefWidth="300" style="-fx-background-color: #1e293b; -fx-padding: 20;">
-            <Label fx:id="userInfoLabel" text="Dashboard DEVELOPPEUR" style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;" wrapText="true"/>
-            <Region prefHeight="20"/>
-            <VBox spacing="5" VBox.vgrow="ALWAYS">
-                <Button text="Mes Projets" onAction="#showProjects" maxWidth="Infinity" styleClass="sidebar-button"/>
-                <Button text="Mes Sprints" onAction="#showSprints" maxWidth="Infinity" styleClass="sidebar-button"/>
-                <Button text="Mes Tâches" onAction="#showMyTasks" maxWidth="Infinity" styleClass="sidebar-button"/>
+        <VBox styleClass="sidebar" prefWidth="240" spacing="0">
+
+            <VBox spacing="2" style="-fx-padding: 28 20 20 20;">
+                <Label text="⚡ PlanUp" styleClass="sidebar-logo" style="-fx-padding: 0;"/>
+                <Label text="Espace Développeur" styleClass="sidebar-logo-sub" style="-fx-padding: 0;"/>
             </VBox>
-            <Button text="Profil" onAction="#showProfile" maxWidth="Infinity" style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-weight: bold;"/>
-            <Button text="Déconnexion" onAction="#logout" maxWidth="Infinity" style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold;"/>
+
+            <Region prefHeight="1" style="-fx-background-color: #1e293b;" maxWidth="Infinity"/>
+
+            <VBox style="-fx-padding: 16 16 0 16;">
+                <VBox styleClass="sidebar-user-box" spacing="2">
+                    <Label fx:id="userInfoLabel" text="Développeur" styleClass="sidebar-user-name" wrapText="true"/>
+                    <Label text="💻 DÉVELOPPEUR" styleClass="sidebar-user-role"/>
+                </VBox>
+            </VBox>
+
+            <Label text="NAVIGATION" styleClass="sidebar-section-label"/>
+
+            <VBox spacing="2" style="-fx-padding: 0 12;" VBox.vgrow="ALWAYS">
+                <Button text="📁  Mes Projets"  onAction="#showProjects"  maxWidth="Infinity" styleClass="sidebar-button"/>
+                <Button text="🔄  Mes Sprints"   onAction="#showSprints"   maxWidth="Infinity" styleClass="sidebar-button"/>
+                <Button text="✅  Mes Tâches"     onAction="#showMyTasks"   maxWidth="Infinity" styleClass="sidebar-button"/>
+            </VBox>
+
+            <VBox spacing="6" style="-fx-padding: 12;">
+                <Button text="👤  Mon Profil"   onAction="#showProfile" maxWidth="Infinity" styleClass="sidebar-button-profile"/>
+                <Button text="🚪  Déconnexion"  onAction="#logout"      maxWidth="Infinity" styleClass="sidebar-button-logout"/>
+            </VBox>
+
         </VBox>
     </left>
 
-    <!-- Main Content Area -->
+    <!-- ══ MAIN CONTENT ══ -->
     <center>
-        <StackPane fx:id="contentArea" style="-fx-background-color: #f8fafc; -fx-padding: 40;">
-            <VBox spacing="20" alignment="CENTER">
-                <Label text="Bienvenue dans l'Espace Développeur" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
+        <StackPane fx:id="contentArea" styleClass="content-area">
+            <VBox spacing="28" alignment="TOP_LEFT">
+
+                <VBox spacing="6">
+                    <Label text="Mon Tableau de Bord" styleClass="page-title"/>
+                    <Label text="Suivez vos projets, sprints et tâches assignées." styleClass="page-subtitle"/>
+                </VBox>
+
+                <VBox styleClass="welcome-banner" spacing="6">
+                    <Label text="👨‍💻 Bienvenue dans l'Espace Développeur" styleClass="welcome-title"/>
+                    <Label text="Consultez vos tâches assignées et l'avancement de vos sprints." styleClass="welcome-subtitle"/>
+                </VBox>
+
+                <!-- Quick action cards -->
+                <HBox spacing="16">
+                    <VBox styleClass="stat-card" spacing="8" HBox.hgrow="ALWAYS">
+                        <Label text="📁" style="-fx-font-size: 24px;"/>
+                        <Label text="Mes Projets" styleClass="stat-label"/>
+                        <Button text="Voir" onAction="#showProjects"
+                                style="-fx-background-color: #eef2ff; -fx-text-fill: #4f46e5; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand; -fx-padding: 6 14;"/>
+                    </VBox>
+                    <VBox styleClass="stat-card" spacing="8" HBox.hgrow="ALWAYS">
+                        <Label text="🔄" style="-fx-font-size: 24px;"/>
+                        <Label text="Mes Sprints" styleClass="stat-label"/>
+                        <Button text="Voir" onAction="#showSprints"
+                                style="-fx-background-color: #f0fdf4; -fx-text-fill: #059669; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand; -fx-padding: 6 14;"/>
+                    </VBox>
+                    <VBox styleClass="stat-card" spacing="8" HBox.hgrow="ALWAYS">
+                        <Label text="✅" style="-fx-font-size: 24px;"/>
+                        <Label text="Mes Tâches" styleClass="stat-label"/>
+                        <Button text="Voir" onAction="#showMyTasks"
+                                style="-fx-background-color: #fef3c7; -fx-text-fill: #d97706; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand; -fx-padding: 6 14;"/>
+                    </VBox>
+                </HBox>
+
             </VBox>
         </StackPane>
     </center>

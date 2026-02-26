@@ -1,20 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<DialogPane xmlns:fx="http://javafx.com/fxml" fx:controller="Controller.CreateEditUserDialogController">
+
+<DialogPane xmlns:fx="http://javafx.com/fxml" fx:controller="Controller.CreateEditUserDialogController"
+            stylesheets="@../assets/style.css"
+            style="-fx-background-color: white; -fx-padding: 0;">
     <content>
-        <VBox spacing="10">
-            <TextField fx:id="cinField" promptText="CIN" />
-            <TextField fx:id="nomField" promptText="Nom" />
-            <TextField fx:id="prenomField" promptText="Prénom" />
-            <TextField fx:id="emailField" promptText="Email" />
-            <PasswordField fx:id="motDePasseField" promptText="Mot de passe" />
-            <TextField fx:id="telField" promptText="Téléphone" />
-            <ComboBox fx:id="roleComboBox" promptText="Rôle" />
+        <VBox spacing="20" style="-fx-padding: 24;">
+
+            <!-- Dialog Header -->
+            <VBox spacing="6">
+                <Label text="➕  Gestion Utilisateur" styleClass="page-title" style="-fx-font-size: 20px;"/>
+                <Label text="Remplissez les informations pour créer ou modifier un utilisateur."
+                       style="-fx-font-size: 12px; -fx-text-fill: #94a3b8;"/>
+            </VBox>
+
+            <!-- Divider -->
+            <Region prefHeight="1" maxWidth="Infinity" style="-fx-background-color: #f1f5f9;"/>
+
+            <!-- Form -->
+            <VBox spacing="12" prefWidth="400">
+                <VBox spacing="5">
+                    <Label text="CIN" styleClass="form-field-label"/>
+                    <TextField fx:id="cinField" promptText="Ex: 12345678"/>
+                </VBox>
+                <HBox spacing="12">
+                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                        <Label text="Nom" styleClass="form-field-label"/>
+                        <TextField fx:id="nomField" promptText="Nom de famille"/>
+                    </VBox>
+                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                        <Label text="Prénom" styleClass="form-field-label"/>
+                        <TextField fx:id="prenomField" promptText="Prénom"/>
+                    </VBox>
+                </HBox>
+                <VBox spacing="5">
+                    <Label text="Email" styleClass="form-field-label"/>
+                    <TextField fx:id="emailField" promptText="nom@exemple.com"/>
+                </VBox>
+                <VBox spacing="5">
+                    <Label text="Mot de passe" styleClass="form-field-label"/>
+                    <PasswordField fx:id="motDePasseField" promptText="••••••••"/>
+                </VBox>
+                <HBox spacing="12">
+                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                        <Label text="Téléphone" styleClass="form-field-label"/>
+                        <TextField fx:id="telField" promptText="+216 XX XXX XXX"/>
+                    </VBox>
+                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                        <Label text="Rôle" styleClass="form-field-label"/>
+                        <ComboBox fx:id="roleComboBox" promptText="Sélectionner" maxWidth="Infinity"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+
         </VBox>
     </content>
     <buttonTypes>
-        <ButtonType text="Enregistrer" buttonData="OK_DONE" />
-        <ButtonType text="Annuler" buttonData="CANCEL_CLOSE" />
+        <ButtonType text="💾  Enregistrer" buttonData="OK_DONE"/>
+        <ButtonType text="Annuler"          buttonData="CANCEL_CLOSE"/>
     </buttonTypes>
 </DialogPane>

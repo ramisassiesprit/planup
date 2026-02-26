@@ -4,36 +4,78 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.shape.Rectangle?>
 
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
            fx:controller="Controller.LoginController"
-           prefHeight="600.0" prefWidth="800.0"
+           prefHeight="650.0" prefWidth="900.0"
            stylesheets="@../assets/style.css"
-           style="-fx-background-color: #0f172a;">
+           style="-fx-background-color: linear-gradient(to bottom right, #0f172a, #1e1b4b, #0f172a);">
 
-    <VBox spacing="30" alignment="CENTER" maxWidth="400" styleClass="card">
-        <VBox alignment="CENTER" spacing="10">
-            <Text text="PlanUp" style="-fx-fill: white; -fx-font-size: 36; -fx-font-weight: bold;"/>
-            <Label text="Connectez-vous pour continuer" style="-fx-opacity: 0.6;"/>
-        </VBox>
+    <!-- Background decorative circles -->
+    <StackPane maxWidth="900" maxHeight="650">
+        <StackPane alignment="TOP_RIGHT" style="-fx-padding: -80 -80 0 0;">
+            <StackPane prefWidth="300" prefHeight="300"
+                       style="-fx-background-color: rgba(99,102,241,0.15); -fx-background-radius: 150;"/>
+        </StackPane>
+        <StackPane alignment="BOTTOM_LEFT" style="-fx-padding: 0 0 -80 -80;">
+            <StackPane prefWidth="250" prefHeight="250"
+                       style="-fx-background-color: rgba(139,92,246,0.1); -fx-background-radius: 125;"/>
+        </StackPane>
+    </StackPane>
 
-        <VBox spacing="15">
-            <VBox spacing="8">
-                <Label text="Email"/>
-                <TextField fx:id="emailField" promptText="nom@exemple.com"/>
+    <!-- Login Card -->
+    <VBox spacing="0" maxWidth="420" maxHeight="570" alignment="CENTER">
+        <VBox styleClass="login-card" spacing="28">
+
+            <!-- Header -->
+            <VBox spacing="8" alignment="CENTER">
+                <!-- Logo icon placeholder -->
+                <StackPane alignment="CENTER">
+                    <StackPane prefWidth="56" prefHeight="56"
+                               style="-fx-background-color: linear-gradient(to bottom right, #6366f1, #8b5cf6); -fx-background-radius: 16;">
+                        <Label text="P" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                    </StackPane>
+                </StackPane>
+                <Label text="PlanUp" styleClass="login-title"/>
+                <Label text="Connectez-vous pour continuer" styleClass="login-subtitle"/>
             </VBox>
-            
-            <VBox spacing="8">
-                <Label text="Mot de passe"/>
-                <PasswordField fx:id="passwordField" promptText="••••••••"/>
+
+            <!-- Form Fields -->
+            <VBox spacing="18">
+                <VBox spacing="6">
+                    <Label text="📧  Adresse Email" styleClass="login-field-label"/>
+                    <TextField fx:id="emailField"
+                               promptText="nom@exemple.com"
+                               styleClass="login-field"
+                               maxWidth="Infinity"/>
+                </VBox>
+
+                <VBox spacing="6">
+                    <Label text="🔒  Mot de passe" styleClass="login-field-label"/>
+                    <PasswordField fx:id="passwordField"
+                                  promptText="••••••••"
+                                  styleClass="login-field"
+                                  maxWidth="Infinity"/>
+                </VBox>
+
+                <Region prefHeight="4"/>
+
+                <!-- Login Button -->
+                <Button fx:id="loginButton"
+                        text="Se Connecter  →"
+                        onAction="#handleLogin"
+                        maxWidth="Infinity"
+                        styleClass="login-button"
+                        defaultButton="true"/>
             </VBox>
-            
-            <Region prefHeight="10"/>
-            <Button fx:id="loginButton" text="Se Connecter" onAction="#handleLogin" maxWidth="Infinity" style="-fx-font-size: 16;" defaultButton="true"/>
+
+            <!-- Footer -->
+            <Label text="PlanUp © 2025 — Gestion de Projets"
+                   alignment="CENTER" maxWidth="Infinity"
+                   style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.25); -fx-alignment: CENTER;"/>
         </VBox>
-        
-        
     </VBox>
 
 </StackPane>

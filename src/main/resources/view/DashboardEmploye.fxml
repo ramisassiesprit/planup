@@ -1,22 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.StackPane?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="Controller.DashboardEmployeController"
- stylesheets="@../assets/style.css" prefWidth="1024" prefHeight="768">
- <left>
-    <VBox spacing="10" styleClass="sidebar" prefWidth="300" style="-fx-background-color: #1e293b; -fx-padding: 20;">
-        <Label fx:id="userInfoLabel" text="Dashboard EMPLOYE" style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;" wrapText="true"/>
-        
-        <Button text="Profil" onAction="#showProfile" maxWidth="Infinity" style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-weight: bold;"/>
-        <Button text="Déconnexion" onAction="#logout" maxWidth="Infinity" style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold;"/>
-    </VBox>
- </left>
- <center>
-    <StackPane fx:id="contentArea" style="-fx-background-color: #f8fafc; -fx-padding: 40;">
-        <VBox spacing="20" alignment="CENTER">
-            <Label text="Bienvenue dans l'Espace Employé" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
+            stylesheets="@../assets/style.css" prefWidth="1200" prefHeight="800">
+
+    <!-- ══ SIDEBAR ══ -->
+    <left>
+        <VBox styleClass="sidebar" prefWidth="240" spacing="0">
+
+            <VBox spacing="2" style="-fx-padding: 28 20 20 20;">
+                <Label text="⚡ PlanUp" styleClass="sidebar-logo" style="-fx-padding: 0;"/>
+                <Label text="Espace Employé" styleClass="sidebar-logo-sub" style="-fx-padding: 0;"/>
+            </VBox>
+
+            <Region prefHeight="1" style="-fx-background-color: #1e293b;" maxWidth="Infinity"/>
+
+            <VBox style="-fx-padding: 16 16 0 16;">
+                <VBox styleClass="sidebar-user-box" spacing="2">
+                    <Label fx:id="userInfoLabel" text="Employé" styleClass="sidebar-user-name" wrapText="true"/>
+                    <Label text="🏢 EMPLOYÉ" styleClass="sidebar-user-role"/>
+                </VBox>
+            </VBox>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <VBox spacing="6" style="-fx-padding: 12;">
+                <Button text="👤  Mon Profil"   onAction="#showProfile" maxWidth="Infinity" styleClass="sidebar-button-profile"/>
+                <Button text="🚪  Déconnexion"  onAction="#logout"      maxWidth="Infinity" styleClass="sidebar-button-logout"/>
+            </VBox>
+
         </VBox>
-    </StackPane>
- </center>
+    </left>
+
+    <!-- ══ MAIN CONTENT ══ -->
+    <center>
+        <StackPane fx:id="contentArea" styleClass="content-area">
+            <VBox spacing="28" alignment="TOP_LEFT">
+
+                <VBox spacing="6">
+                    <Label text="Mon Espace" styleClass="page-title"/>
+                    <Label text="Consultez vos informations et gérez votre profil." styleClass="page-subtitle"/>
+                </VBox>
+
+                <VBox styleClass="welcome-banner" spacing="6">
+                    <Label text="🏢 Bienvenue dans l'Espace Employé" styleClass="welcome-title"/>
+                    <Label text="Vous pouvez consulter et modifier votre profil depuis la barre latérale." styleClass="welcome-subtitle"/>
+                </VBox>
+
+            </VBox>
+        </StackPane>
+    </center>
+
 </BorderPane>

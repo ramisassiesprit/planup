@@ -163,7 +163,6 @@ public class DashboardRHController implements Initializable {
         }
     }
 
-
     private void loadOffres() {
         offreList.clear();
         offreList.addAll(serviceOffre.afficher());
@@ -282,7 +281,7 @@ public class DashboardRHController implements Initializable {
         return true;
     }
 
-        @FXML
+    @FXML
     private void showOffres() {
         contentArea.getChildren().removeIf(node -> node != congesView && node != welcomeView);
         if (welcomeView != null) {
@@ -291,7 +290,6 @@ public class DashboardRHController implements Initializable {
                 congesView.setVisible(false);
         }
     }
-
 
     private void setupCongesTable() {
         idCongeColumn.setCellValueFactory(new PropertyValueFactory<>("idConge"));
@@ -495,7 +493,6 @@ public class DashboardRHController implements Initializable {
         txtCongeSolde.clear();
         congesTable.getSelectionModel().clearSelection();
     }
-
 
     @FXML
     private void showCongesManagement() {
