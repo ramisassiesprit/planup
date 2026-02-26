@@ -1,7 +1,9 @@
 package Controller;
 
+import Entite.Candidature;
 import Entite.OffreEmploi;
 import Entite.Utilisateur;
+import Service.ServiceCandidature;
 import Service.ServiceOffreEmploi;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -31,14 +33,23 @@ public class DashboardRHController implements Initializable {
     @FXML private TextArea descriptionArea;
     @FXML private ComboBox<String> typeContratCombo, statutCombo;
 
+    @FXML private TableView<Candidature> candidaturesTable;
+    @FXML private TableColumn<Candidature, String> candidatNameCol;
+    @FXML private TableColumn<Candidature, String> candidatEmailCol;
+    @FXML private TableColumn<Candidature, String> candidatureStatusCol;
+    @FXML private TableColumn<Candidature, String> datePostulationCol;
+
     private final ServiceOffreEmploi serviceOffre = new ServiceOffreEmploi();
+    private final ServiceCandidature serviceCandidature = new ServiceCandidature();
     private ObservableList<OffreEmploi> offreList = FXCollections.observableArrayList();
+    private ObservableList<Candidature> candidaturesList = FXCollections.observableArrayList();
     private Utilisateur currentUser;
     private OffreEmploi selectedOffre;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         setupOffreTable();
+        setupCandidaturesTable();
         loadOffres();
     }
 
@@ -46,6 +57,43 @@ public class DashboardRHController implements Initializable {
         this.currentUser = user;
         if (user != null) {
             userInfoLabel.setText("Dashboard RH - " + user.getPrenom() + " " + user.getNom());
+        }
+    }
+
+    private void setupOffreTable() {
+        // Basic setup for offretable could be added here if needed, 
+        // but it's typically done in FXML or via PropertyValueFactory
+        offreTable.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                selectedOffre = newVal;
+                populateForm(newVal);
+                loadCandidaturesForOffre(newVal);
+            }
+        });
+        
+        typeContratCombo.setItems(FXCollections.observableArrayList("CDI", "CDD", "Stage", "Freelance", "Alternance"));
+        statutCombo.setItems(FXCollections.observableArrayList("Ouverte", "Fermée", "En cours"));
+    }
+
+    private void setupCandidaturesTable() {
+        candidatNameCol.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(
+                cellData.getValue().getCandidat() != null ? 
+                cellData.getValue().getCandidat().getPrenom() + " " + cellData.getValue().getCandidat().getNom() : 
+                "N/A"));
+        candidatEmailCol.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(
+                cellData.getValue().getCandidat() != null ? cellData.getValue().getCandidat().getEmail() : "N/A"));
+        candidatureStatusCol.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(
+                cellData.getValue().getStatut()));
+        datePostulationCol.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(
+                cellData.getValue().getDatePostulation() != null ? cellData.getValue().getDatePostulation().toString() : "N/A"));
+        
+        candidaturesTable.setItems(candidaturesList);
+    }
+
+    private void loadCandidaturesForOffre(OffreEmploi offre) {
+        candidaturesList.clear();
+        if (offre != null) {
+            candidaturesList.addAll(serviceCandidature.afficherByOffreId(offre.getIdOffre()));
         }
     }
 
@@ -102,18 +150,17 @@ public class DashboardRHController implements Initializable {
         }
     }
 
-    private void setupOffreTable() {
-        // Basic setup for offretable could be added here if needed, 
-        // but it's typically done in FXML or via PropertyValueFactory
-        offreTable.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null) {
-                selectedOffre = newVal;
-                populateForm(newVal);
-            }
-        });
-        
-        typeContratCombo.setItems(FXCollections.observableArrayList("CDI", "CDD", "Stage", "Freelance", "Alternance"));
-        statutCombo.setItems(FXCollections.observableArrayList("Ouverte", "Fermée", "En cours"));
+    private void loadViewWithRole(String fxmlPath, String role) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent view = loader.load();
+            Object controller = loader.getController();
+            if (controller instanceof ProjectController) ((ProjectController) controller).setUserRole(role);
+            else if (controller instanceof SprintController) ((SprintController) controller).setUserRole(role);
+            contentArea.getChildren().setAll(view);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void loadOffres() {
@@ -172,6 +219,7 @@ public class DashboardRHController implements Initializable {
         if (selectedOffre == null) return;
         if (serviceOffre.supprimer(selectedOffre.getIdOffre())) {
             loadOffres();
+            candidaturesList.clear();
             handleClear();
         }
     }
@@ -186,23 +234,11 @@ public class DashboardRHController implements Initializable {
         localisationField.clear();
         statutCombo.setValue(null);
         selectedOffre = null;
+        candidaturesList.clear();
         offreTable.getSelectionModel().clearSelection();
     }
 
     private boolean validateForm() {
         return !titreField.getText().isEmpty() && typeContratCombo.getValue() != null && !salaireField.getText().isEmpty();
-    }
-
-    private void loadViewWithRole(String fxmlPath, String role) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Parent view = loader.load();
-            Object controller = loader.getController();
-            if (controller instanceof ProjectController) ((ProjectController) controller).setUserRole(role);
-            else if (controller instanceof SprintController) ((SprintController) controller).setUserRole(role);
-            contentArea.getChildren().setAll(view);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

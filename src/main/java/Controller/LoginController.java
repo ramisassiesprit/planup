@@ -50,6 +50,9 @@ public class LoginController {
                 case "INTEGRATEUR":
                     fxmlFile = "/view/DashboardIntegrateur.fxml";
                     break;
+                case "CANDIDAT":
+                    fxmlFile = "/view/DashboardCandidat.fxml";
+                    break;
                 default:
                     showAlert(Alert.AlertType.ERROR, "Erreur", "Role inconnu", "Votre rôle n'est pas reconnu.");
                     return;
@@ -74,6 +77,9 @@ public class LoginController {
                     ctrl.setUserInfo(user);
                 } else if (role.equalsIgnoreCase("INTEGRATEUR")) {
                     DashboardIntegrateurController ctrl = loader.getController();
+                    ctrl.setUserInfo(user);
+                } else if (role.equalsIgnoreCase("CANDIDAT")) {
+                    DashboardCandidatController ctrl = loader.getController();
                     ctrl.setUserInfo(user);
                 }
 

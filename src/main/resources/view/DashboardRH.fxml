@@ -118,34 +118,57 @@
                     </VBox>
 
                     <!-- Table -->
-                    <TableView fx:id="offreTable" VBox.vgrow="ALWAYS">
-                        <columns>
-                            <TableColumn text="ID"               prefWidth="50">
-                                <cellValueFactory><PropertyValueFactory property="idOffre"/></cellValueFactory>
-                            </TableColumn>
-                            <TableColumn text="Titre"            prefWidth="160">
-                                <cellValueFactory><PropertyValueFactory property="titre"/></cellValueFactory>
-                            </TableColumn>
-                            <TableColumn text="Contrat"          prefWidth="110">
-                                <cellValueFactory><PropertyValueFactory property="typeContrat"/></cellValueFactory>
-                            </TableColumn>
-                            <TableColumn text="Salaire"          prefWidth="100">
-                                <cellValueFactory><PropertyValueFactory property="salaire"/></cellValueFactory>
-                            </TableColumn>
-                            <TableColumn text="Localisation"     prefWidth="130">
-                                <cellValueFactory><PropertyValueFactory property="localisation"/></cellValueFactory>
-                            </TableColumn>
-                            <TableColumn text="Statut"           prefWidth="100">
-                                <cellValueFactory><PropertyValueFactory property="statut"/></cellValueFactory>
-                            </TableColumn>
-                            <TableColumn text="Date Publication" prefWidth="130">
-                                <cellValueFactory><PropertyValueFactory property="datePublication"/></cellValueFactory>
-                            </TableColumn>
-                        </columns>
-                        <columnResizePolicy>
-                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
-                        </columnResizePolicy>
-                    </TableView>
+                    <SplitPane dividerPositions="0.5" VBox.vgrow="ALWAYS">
+                        <VBox spacing="10">
+                            <Label text="Offres d'Emploi" styleClass="form-field-label"/>
+                            <TableView fx:id="offreTable" VBox.vgrow="ALWAYS">
+                                <columns>
+                                    <TableColumn text="ID"               prefWidth="50">
+                                        <cellValueFactory><PropertyValueFactory property="idOffre"/></cellValueFactory>
+                                    </TableColumn>
+                                    <TableColumn text="Titre"            prefWidth="160">
+                                        <cellValueFactory><PropertyValueFactory property="titre"/></cellValueFactory>
+                                    </TableColumn>
+                                    <TableColumn text="Contrat"          prefWidth="110">
+                                        <cellValueFactory><PropertyValueFactory property="typeContrat"/></cellValueFactory>
+                                    </TableColumn>
+                                    <TableColumn text="Salaire"          prefWidth="100">
+                                        <cellValueFactory><PropertyValueFactory property="salaire"/></cellValueFactory>
+                                    </TableColumn>
+                                    <TableColumn text="Localisation"     prefWidth="130">
+                                        <cellValueFactory><PropertyValueFactory property="localisation"/></cellValueFactory>
+                                    </TableColumn>
+                                    <TableColumn text="Statut"           prefWidth="100">
+                                        <cellValueFactory><PropertyValueFactory property="statut"/></cellValueFactory>
+                                    </TableColumn>
+                                    <TableColumn text="Date Publication" prefWidth="130">
+                                        <cellValueFactory><PropertyValueFactory property="datePublication"/></cellValueFactory>
+                                    </TableColumn>
+                                </columns>
+                                <columnResizePolicy>
+                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                                </columnResizePolicy>
+                            </TableView>
+                        </VBox>
+                        <VBox spacing="10">
+                            <Label text="Candidatures" styleClass="form-field-label"/>
+                            <TableView fx:id="candidaturesTable" VBox.vgrow="ALWAYS">
+                                <columns>
+                                    <TableColumn fx:id="candidatNameCol" text="Candidat" prefWidth="150">
+                                    </TableColumn>
+                                    <TableColumn fx:id="candidatEmailCol" text="Email" prefWidth="180">
+                                    </TableColumn>
+                                    <TableColumn fx:id="candidatureStatusCol" text="Statut" prefWidth="110">
+                                    </TableColumn>
+                                    <TableColumn fx:id="datePostulationCol" text="Date Postulation" prefWidth="130">
+                                    </TableColumn>
+                                </columns>
+                                <columnResizePolicy>
+                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                                </columnResizePolicy>
+                            </TableView>
+                        </VBox>
+                    </SplitPane>
 
                 </VBox>
 
