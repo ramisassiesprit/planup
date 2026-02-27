@@ -38,13 +38,12 @@ public class DashboardCandidatController implements Initializable {
 
     @FXML private TableView<Candidature> mesCandidaturesTable;
     @FXML private TableColumn<Candidature, String> offreTitleCol;
-    @FXML private TableColumn<Candidature, String> candidatureStatusCol;
     @FXML private TableColumn<Candidature, String> datePostulationCol;
 
     @FXML private TextArea descriptionArea;
     @FXML private Label detailsSalaireLabel, detailsTypeContratLabel, detailsLocalisationLabel;
     @FXML private TextArea lettreMotivationArea;
-    @FXML private Button accepterButton, refuserButton, candidaterButton;
+    @FXML private Button candidaterButton;
 
     private final ServiceOffreEmploi serviceOffre = new ServiceOffreEmploi();
     private final ServiceCandidature serviceCandidature = new ServiceCandidature();
@@ -84,7 +83,6 @@ public class DashboardCandidatController implements Initializable {
             if (newVal != null) {
                 selectedOffre = newVal;
                 updateOffreDetails(newVal);
-                updateCandidatureStatusForOffre(newVal);
             }
         });
     }
@@ -92,8 +90,6 @@ public class DashboardCandidatController implements Initializable {
     private void setupMesCandidaturesTable() {
         offreTitleCol.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(
                 cellData.getValue().getOffre() != null ? cellData.getValue().getOffre().getTitre() : "N/A"));
-        candidatureStatusCol.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(
-                cellData.getValue().getStatut()));
         datePostulationCol.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(
                 cellData.getValue().getDatePostulation() != null ? cellData.getValue().getDatePostulation().toString() : "N/A"));
 
@@ -117,38 +113,6 @@ public class DashboardCandidatController implements Initializable {
         detailsSalaireLabel.setText("Salaire: " + offre.getSalaire() + " TND");
         detailsTypeContratLabel.setText("Type Contrat: " + offre.getTypeContrat());
         detailsLocalisationLabel.setText("Localisation: " + offre.getLocalisation());
-    }
-
-    private void updateCandidatureStatusForOffre(OffreEmploi offre) {
-        if (currentUser == null || offre == null) {
-            candidaterButton.setDisable(false);
-            accepterButton.setDisable(true);
-            refuserButton.setDisable(true);
-            lettreMotivationArea.clear();
-            return;
-        }
-
-        Candidature existingCandidature = serviceCandidature.getCandidatureByCanidatAndOffre(currentUser.getCin(), offre.getIdOffre());
-        
-        if (existingCandidature != null) {
-            candidaterButton.setDisable(true);
-            String status = existingCandidature.getStatut();
-            
-            if ("PENDING".equalsIgnoreCase(status)) {
-                accepterButton.setDisable(false);
-                refuserButton.setDisable(false);
-            } else {
-                accepterButton.setDisable(true);
-                refuserButton.setDisable(true);
-            }
-            
-            lettreMotivationArea.setText(existingCandidature.getLettreMotivation());
-        } else {
-            candidaterButton.setDisable(false);
-            accepterButton.setDisable(true);
-            refuserButton.setDisable(true);
-            lettreMotivationArea.clear();
-        }
     }
 
     @FXML
@@ -175,43 +139,8 @@ public class DashboardCandidatController implements Initializable {
         if (serviceCandidature.ajouter(candidature)) {
             showAlert(Alert.AlertType.INFORMATION, "Succès", "Candidature", "Votre candidature a été enregistrée.");
             loadMesCandidatures();
-            updateCandidatureStatusForOffre(selectedOffre);
         } else {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Candidature", "Erreur lors de l'enregistrement de la candidature.");
-        }
-    }
-
-    @FXML
-    private void handleAccepter() {
-        if (selectedOffre == null || currentUser == null) {
-            showAlert(Alert.AlertType.WARNING, "Attention", "Action", "Veuillez sélectionner une offre.");
-            return;
-        }
-
-        Candidature candidature = serviceCandidature.getCandidatureByCanidatAndOffre(currentUser.getCin(), selectedOffre.getIdOffre());
-        if (candidature != null && serviceCandidature.updateStatut(candidature.getIdCandidature(), "ACCEPTED")) {
-            showAlert(Alert.AlertType.INFORMATION, "Succès", "Acceptation", "Vous avez accepté cette offre.");
-            loadMesCandidatures();
-            updateCandidatureStatusForOffre(selectedOffre);
-        } else {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Action", "Erreur lors de l'acceptation de l'offre.");
-        }
-    }
-
-    @FXML
-    private void handleRefuser() {
-        if (selectedOffre == null || currentUser == null) {
-            showAlert(Alert.AlertType.WARNING, "Attention", "Action", "Veuillez sélectionner une offre.");
-            return;
-        }
-
-        Candidature candidature = serviceCandidature.getCandidatureByCanidatAndOffre(currentUser.getCin(), selectedOffre.getIdOffre());
-        if (candidature != null && serviceCandidature.updateStatut(candidature.getIdCandidature(), "DECLINED")) {
-            showAlert(Alert.AlertType.INFORMATION, "Succès", "Refus", "Vous avez décliné cette offre.");
-            loadMesCandidatures();
-            updateCandidatureStatusForOffre(selectedOffre);
-        } else {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Action", "Erreur lors du refus de l'offre.");
         }
     }
 

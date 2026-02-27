@@ -109,15 +109,9 @@
                             <TextArea fx:id="lettreMotivationArea" wrapText="true" prefHeight="70" promptText="Écrivez votre lettre de motivation ici..." style="-fx-control-inner-background: #f1f5f9; -fx-padding: 8;"/>
                             
                             <HBox spacing="10" style="-fx-padding: 10 0 0 0;">
-                                <Button fx:id="candidaterButton" text="Candidater" 
+                                <Button fx:id="candidaterButton" text="Soumettre ma Candidature" 
                                         style="-fx-background-color: #10b981; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 8; -fx-cursor: hand;" 
                                         onAction="#handleCandidater" HBox.hgrow="ALWAYS"/>
-                                <Button fx:id="accepterButton" text="Accepter" 
-                                        style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 8; -fx-cursor: hand;" 
-                                        onAction="#handleAccepter" HBox.hgrow="ALWAYS"/>
-                                <Button fx:id="refuserButton" text="Refuser" 
-                                        style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 8; -fx-cursor: hand;" 
-                                        onAction="#handleRefuser" HBox.hgrow="ALWAYS"/>
                             </HBox>
                         </VBox>
                     </VBox>
@@ -136,12 +130,11 @@
 
                 <!-- Candidatures Card -->
                 <VBox styleClass="card" spacing="12" VBox.vgrow="ALWAYS">
-                    <Label text="�  Historique des Candidatures" styleClass="card-title"/>
+                    <Label text=" Historique des Candidatures" styleClass="card-title"/>
                     
                     <TableView fx:id="mesCandidaturesTable" VBox.vgrow="ALWAYS">
                         <columns>
                             <TableColumn fx:id="offreTitleCol" text="Offre d'Emploi" prefWidth="250"/>
-                            <TableColumn fx:id="candidatureStatusCol" text="Statut" prefWidth="120"/>
                             <TableColumn fx:id="datePostulationCol" text="Date de Postulation" prefWidth="150"/>
                         </columns>
                         <columnResizePolicy>

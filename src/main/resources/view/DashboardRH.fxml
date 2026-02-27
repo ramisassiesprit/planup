@@ -154,13 +154,13 @@
                             <Label text="Candidatures" styleClass="form-field-label"/>
                             <TableView fx:id="candidaturesTable" VBox.vgrow="ALWAYS">
                                 <columns>
-                                    <TableColumn fx:id="candidatNameCol" text="Candidat" prefWidth="150">
+                                    <TableColumn fx:id="candidatNameCol" text="Candidat" prefWidth="120">
                                     </TableColumn>
-                                    <TableColumn fx:id="candidatEmailCol" text="Email" prefWidth="180">
+                                    <TableColumn fx:id="candidatEmailCol" text="Email" prefWidth="150">
                                     </TableColumn>
-                                    <TableColumn fx:id="candidatureStatusCol" text="Statut" prefWidth="110">
+                                    <TableColumn fx:id="datePostulationCol" text="Date Postulation" prefWidth="120">
                                     </TableColumn>
-                                    <TableColumn fx:id="datePostulationCol" text="Date Postulation" prefWidth="130">
+                                    <TableColumn fx:id="lettreMotivationCol" text="Lettre de Motivation" prefWidth="300">
                                     </TableColumn>
                                 </columns>
                                 <columnResizePolicy>

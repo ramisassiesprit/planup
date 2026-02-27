@@ -36,8 +36,8 @@ public class DashboardRHController implements Initializable {
     @FXML private TableView<Candidature> candidaturesTable;
     @FXML private TableColumn<Candidature, String> candidatNameCol;
     @FXML private TableColumn<Candidature, String> candidatEmailCol;
-    @FXML private TableColumn<Candidature, String> candidatureStatusCol;
     @FXML private TableColumn<Candidature, String> datePostulationCol;
+    @FXML private TableColumn<Candidature, String> lettreMotivationCol;
 
     private final ServiceOffreEmploi serviceOffre = new ServiceOffreEmploi();
     private final ServiceCandidature serviceCandidature = new ServiceCandidature();
@@ -82,10 +82,10 @@ public class DashboardRHController implements Initializable {
                 "N/A"));
         candidatEmailCol.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(
                 cellData.getValue().getCandidat() != null ? cellData.getValue().getCandidat().getEmail() : "N/A"));
-        candidatureStatusCol.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(
-                cellData.getValue().getStatut()));
         datePostulationCol.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(
                 cellData.getValue().getDatePostulation() != null ? cellData.getValue().getDatePostulation().toString() : "N/A"));
+        lettreMotivationCol.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(
+                cellData.getValue().getLettreMotivation() != null ? cellData.getValue().getLettreMotivation() : "Non fournie"));
         
         candidaturesTable.setItems(candidaturesList);
     }
