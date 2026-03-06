@@ -4,6 +4,7 @@ import Entite.Project;
 import Entite.Sprint;
 import Service.ServiceProject;
 import Service.ServiceSprint;
+import Service.ServiceTache;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -11,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 public class SprintController {
@@ -26,6 +28,9 @@ public class SprintController {
 
     @FXML
     private TableColumn<Sprint, String> colProject;
+
+    @FXML
+    private TableColumn<Sprint, Double> colProgress;
 
     @FXML
     private Label formTitle;
@@ -53,6 +58,7 @@ public class SprintController {
 
     private ServiceSprint serviceSprint = new ServiceSprint();
     private ServiceProject serviceProject = new ServiceProject();
+    private ServiceTache serviceTache = new ServiceTache();
     private ObservableList<Sprint> sprintList = FXCollections.observableArrayList();
     private ObservableList<Project> projectList = FXCollections.observableArrayList();
     private String userRole;
@@ -64,6 +70,34 @@ public class SprintController {
         colName.setCellValueFactory(new PropertyValueFactory<>("name"));
         colProject.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(
                 cellData.getValue().getProject() != null ? cellData.getValue().getProject().getName() : "N/A"));
+
+        // Configuration de la barre de progression
+        colProgress.setCellValueFactory(new PropertyValueFactory<>("progress"));
+        colProgress.setCellFactory(column -> new TableCell<Sprint, Double>() {
+            private final ProgressBar progressBar = new ProgressBar();
+
+            @Override
+            protected void updateItem(Double item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setGraphic(null);
+                } else {
+                    progressBar.setProgress(item);
+                    progressBar.setMaxWidth(Double.MAX_VALUE);
+
+                    // Style de la barre selon l'avancement
+                    if (item >= 1.0) {
+                        progressBar.setStyle("-fx-accent: #2ecc71;"); // Vert
+                    } else if (item > 0.5) {
+                        progressBar.setStyle("-fx-accent: #3498db;"); // Bleu
+                    } else {
+                        progressBar.setStyle("-fx-accent: #f1c40f;"); // Jaune
+                    }
+
+                    setGraphic(progressBar);
+                }
+            }
+        });
 
         // Charger les projets dans le ComboBox
         loadProjects();
@@ -157,7 +191,11 @@ public class SprintController {
     private void loadSprints() {
         try {
             sprintList.clear();
-            sprintList.addAll(serviceSprint.readAll());
+            List<Sprint> sprints = serviceSprint.readAll();
+            for (Sprint s : sprints) {
+                s.setProgress(serviceTache.getSprintProgress(s.getIdSprint()));
+            }
+            sprintList.addAll(sprints);
             sprintTable.setItems(sprintList);
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger les sprints", e.getMessage());
@@ -259,7 +297,11 @@ public class SprintController {
 
         try {
             sprintList.clear();
-            sprintList.addAll(serviceSprint.getSprintsByProject(selectedProject.getIdProject()));
+            List<Sprint> sprints = serviceSprint.getSprintsByProject(selectedProject.getIdProject());
+            for (Sprint s : sprints) {
+                s.setProgress(serviceTache.getSprintProgress(s.getIdSprint()));
+            }
+            sprintList.addAll(sprints);
             sprintTable.setItems(sprintList);
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de filtrer les sprints", e.getMessage());

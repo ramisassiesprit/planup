@@ -2,6 +2,7 @@ package Controller;
 
 import Entite.Project;
 import Service.ServiceProject;
+import Service.ServiceSprint;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -10,6 +11,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 public class ProjectController {
@@ -25,6 +27,9 @@ public class ProjectController {
 
     @FXML
     private TableColumn<Project, String> colType;
+
+    @FXML
+    private TableColumn<Project, Double> colProgress;
 
     @FXML
     private TextField nameField;
@@ -45,6 +50,7 @@ public class ProjectController {
     private VBox formContainer;
 
     private ServiceProject serviceProject = new ServiceProject();
+    private ServiceSprint serviceSprint = new ServiceSprint();
     private ObservableList<Project> projectList = FXCollections.observableArrayList();
     private String userRole;
 
@@ -54,6 +60,34 @@ public class ProjectController {
         colId.setCellValueFactory(new PropertyValueFactory<>("idProject"));
         colName.setCellValueFactory(new PropertyValueFactory<>("name"));
         colType.setCellValueFactory(new PropertyValueFactory<>("type"));
+
+        // Configuration de la barre de progression
+        colProgress.setCellValueFactory(new PropertyValueFactory<>("progress"));
+        colProgress.setCellFactory(column -> new TableCell<Project, Double>() {
+            private final ProgressBar progressBar = new ProgressBar();
+
+            @Override
+            protected void updateItem(Double item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setGraphic(null);
+                } else {
+                    progressBar.setProgress(item);
+                    progressBar.setMaxWidth(Double.MAX_VALUE);
+
+                    // Style de la barre selon l'avancement
+                    if (item >= 1.0) {
+                        progressBar.setStyle("-fx-accent: #2ecc71;"); // Vert
+                    } else if (item > 0.5) {
+                        progressBar.setStyle("-fx-accent: #3498db;"); // Bleu
+                    } else {
+                        progressBar.setStyle("-fx-accent: #f1c40f;"); // Jaune
+                    }
+
+                    setGraphic(progressBar);
+                }
+            }
+        });
 
         // Charger les données
         loadProjects();
@@ -72,10 +106,10 @@ public class ProjectController {
      */
     public void setUserRole(String role) {
         this.userRole = role;
-        
+
         // Seuls ADMIN et MANAGER peuvent modifier
         boolean canEdit = "ADMIN".equalsIgnoreCase(role) || "MANAGER".equalsIgnoreCase(role);
-        
+
         // Si ce n'est pas un manager ou admin, on cache le formulaire de saisie
         if (formContainer != null) {
             formContainer.setVisible(canEdit);
@@ -86,7 +120,11 @@ public class ProjectController {
     private void loadProjects() {
         try {
             projectList.clear();
-            projectList.addAll(serviceProject.readAll());
+            List<Project> projects = serviceProject.readAll();
+            for (Project p : projects) {
+                p.setProgress(serviceSprint.getProjectProgress(p.getIdProject()));
+            }
+            projectList.addAll(projects);
             projectTable.setItems(projectList);
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger les projets", e.getMessage());
@@ -99,7 +137,7 @@ public class ProjectController {
         String type = typeField.getText().trim();
 
         if (name.isEmpty() || type.isEmpty()) {
-            showAlert(Alert.AlertType.WARNING, "Validation", "Champs requis", 
+            showAlert(Alert.AlertType.WARNING, "Validation", "Champs requis",
                     "Veuillez remplir tous les champs");
             return;
         }
@@ -107,7 +145,7 @@ public class ProjectController {
         try {
             Project project = new Project(name, type);
             if (serviceProject.ajouter(project)) {
-                showAlert(Alert.AlertType.INFORMATION, "Succès", "Projet ajouté", 
+                showAlert(Alert.AlertType.INFORMATION, "Succès", "Projet ajouté",
                         "Le projet a été ajouté avec succès");
                 clearFields();
                 loadProjects();
@@ -121,7 +159,7 @@ public class ProjectController {
     private void handleUpdate() {
         Project selected = projectTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            showAlert(Alert.AlertType.WARNING, "Sélection", "Aucun projet sélectionné", 
+            showAlert(Alert.AlertType.WARNING, "Sélection", "Aucun projet sélectionné",
                     "Veuillez sélectionner un projet à modifier");
             return;
         }
@@ -130,7 +168,7 @@ public class ProjectController {
         String type = typeField.getText().trim();
 
         if (name.isEmpty() || type.isEmpty()) {
-            showAlert(Alert.AlertType.WARNING, "Validation", "Champs requis", 
+            showAlert(Alert.AlertType.WARNING, "Validation", "Champs requis",
                     "Veuillez remplir tous les champs");
             return;
         }
@@ -139,7 +177,7 @@ public class ProjectController {
             selected.setName(name);
             selected.setType(type);
             if (serviceProject.modifier(selected)) {
-                showAlert(Alert.AlertType.INFORMATION, "Succès", "Projet modifié", 
+                showAlert(Alert.AlertType.INFORMATION, "Succès", "Projet modifié",
                         "Le projet a été modifié avec succès");
                 clearFields();
                 loadProjects();
@@ -153,7 +191,7 @@ public class ProjectController {
     private void handleDelete() {
         Project selected = projectTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            showAlert(Alert.AlertType.WARNING, "Sélection", "Aucun projet sélectionné", 
+            showAlert(Alert.AlertType.WARNING, "Sélection", "Aucun projet sélectionné",
                     "Veuillez sélectionner un projet à supprimer");
             return;
         }
@@ -161,13 +199,14 @@ public class ProjectController {
         Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
         confirmation.setTitle("Confirmation");
         confirmation.setHeaderText("Supprimer le projet");
-        confirmation.setContentText("Êtes-vous sûr de vouloir supprimer ce projet ?\nCette action supprimera également tous les sprints associés.");
+        confirmation.setContentText(
+                "Êtes-vous sûr de vouloir supprimer ce projet ?\nCette action supprimera également tous les sprints associés.");
 
         Optional<ButtonType> result = confirmation.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
                 if (serviceProject.supprimer(selected)) {
-                    showAlert(Alert.AlertType.INFORMATION, "Succès", "Projet supprimé", 
+                    showAlert(Alert.AlertType.INFORMATION, "Succès", "Projet supprimé",
                             "Le projet a été supprimé avec succès");
                     clearFields();
                     loadProjects();

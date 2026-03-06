@@ -4,6 +4,7 @@ public class Project {
     private int idProject;
     private String name;
     private String type;
+    private double progress;
 
     public Project() {
     }
@@ -41,6 +42,14 @@ public class Project {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public double getProgress() {
+        return progress;
+    }
+
+    public void setProgress(double progress) {
+        this.progress = progress;
     }
 
     @Override
