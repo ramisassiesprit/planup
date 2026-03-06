@@ -48,11 +48,21 @@
         </HBox>
     </VBox>
 
-    <!-- Table Card -->
+    <!-- Container Card (was Table Card) -->
     <VBox VBox.vgrow="ALWAYS" styleClass="card" spacing="14">
-        <Label text="Liste des Sprints" styleClass="card-title"/>
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <Label text="Liste des Sprints" styleClass="card-title" HBox.hgrow="ALWAYS"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <!-- Optional: Toggle button could go here -->
+        </HBox>
 
-        <TableView fx:id="sprintTable" VBox.vgrow="ALWAYS">
+        <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;">
+            <FlowPane fx:id="sprintContainer" hgap="20" vgap="20" styleClass="sprint-container">
+                <!-- Cards will be injected here -->
+            </FlowPane>
+        </ScrollPane>
+
+        <TableView fx:id="sprintTable" VBox.vgrow="ALWAYS" visible="false" managed="false">
             <columns>
                 <TableColumn fx:id="colId"      text="ID"           prefWidth="80"  style="-fx-alignment: CENTER;"/>
                 <TableColumn fx:id="colName"    text="Nom du Sprint" prefWidth="310"/>
@@ -64,5 +74,6 @@
             </columnResizePolicy>
         </TableView>
     </VBox>
+
 
 </VBox>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.shape.Circle?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="Controller.SprintCardController"
+      styleClass="sprint-card" spacing="12" onMouseClicked="#handleCardClick">
+    
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <StackPane>
+            <Circle radius="18" fill="#eef2ff"/>
+            <Label text="🔄" styleClass="sprint-card-icon"/>
+        </StackPane>
+        <VBox HBox.hgrow="ALWAYS">
+            <Label fx:id="nameLabel" text="Sprint Name" styleClass="sprint-card-name"/>
+            <Label fx:id="projectLabel" text="Project Name" styleClass="sprint-card-project"/>
+        </VBox>
+    </HBox>
+
+    <Separator/>
+
+    <VBox spacing="6">
+        <HBox alignment="CENTER_LEFT">
+            <Label text="Avancement" styleClass="sprint-card-progress-label"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="progressText" text="0%" styleClass="sprint-card-progress-label" style="-fx-font-weight: bold; -fx-text-fill: #6366f1;"/>
+        </HBox>
+        <ProgressBar fx:id="progressBar" progress="0.0" maxWidth="Infinity" prefHeight="8"/>
+    </VBox>
+
+    <HBox fx:id="actionsBox" spacing="8" alignment="CENTER_RIGHT" styleClass="sprint-card-actions">
+        <Button fx:id="btnEdit" text="✏️" onAction="#handleEdit" styleClass="btn-secondary" style="-fx-padding: 5 10; -fx-background-radius: 6;"/>
+        <Button fx:id="btnDelete" text="🗑️" onAction="#handleDelete" styleClass="btn-danger" style="-fx-padding: 5 10; -fx-background-radius: 6;"/>
+    </HBox>
+</VBox>

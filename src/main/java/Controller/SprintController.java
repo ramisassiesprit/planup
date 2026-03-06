@@ -14,6 +14,11 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+import java.io.IOException;
+import javafx.scene.layout.VBox;
+import javafx.scene.layout.FlowPane;
+import javafx.fxml.FXMLLoader;
+
 
 public class SprintController {
 
@@ -34,6 +39,10 @@ public class SprintController {
 
     @FXML
     private Label formTitle;
+
+    @FXML
+    private FlowPane sprintContainer;
+
 
     @FXML
     private Label nameLabel;
@@ -99,20 +108,6 @@ public class SprintController {
             }
         });
 
-        // Charger les projets dans le ComboBox
-        loadProjects();
-
-        // Charger les sprints
-        loadSprints();
-
-        // Sélection dans le tableau
-        sprintTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            if (newSelection != null && ("ADMIN".equalsIgnoreCase(userRole) || "MANAGER".equalsIgnoreCase(userRole))) {
-                nameField.setText(newSelection.getName());
-                projectComboBox.setValue(newSelection.getProject());
-            }
-        });
-
         // Configuration du ComboBox pour afficher le nom du projet
         projectComboBox.setCellFactory(param -> new ListCell<Project>() {
             @Override
@@ -137,7 +132,52 @@ public class SprintController {
                 }
             }
         });
+
+        // Charger les projets dans le ComboBox
+        loadProjects();
+
+        // Charger les sprints
+        loadSprints();
     }
+
+
+    public void selectSprint(Sprint sprint) {
+        if ("ADMIN".equalsIgnoreCase(userRole) || "MANAGER".equalsIgnoreCase(userRole)) {
+            sprintTable.getSelectionModel().select(sprint);
+            nameField.setText(sprint.getName());
+            projectComboBox.setValue(sprint.getProject());
+        }
+    }
+
+    public void selectSprintAndFocus(Sprint sprint) {
+        selectSprint(sprint);
+        nameField.requestFocus();
+    }
+
+    public void deleteSprint(Sprint sprint) {
+        sprintTable.getSelectionModel().select(sprint);
+        handleDelete();
+    }
+
+    private void renderSprints() {
+        if (sprintContainer == null) return;
+        
+        sprintContainer.getChildren().clear();
+        for (Sprint sprint : sprintList) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/SprintCard.fxml"));
+                VBox card = loader.load();
+                
+                SprintCardController cardController = loader.getController();
+                cardController.setData(sprint, this, userRole);
+                
+                sprintContainer.getChildren().add(card);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     /**
      * Configure les permissions selon le rôle
@@ -176,7 +216,10 @@ public class SprintController {
         // S'assurer que le bouton de filtre et le bouton effacer sont toujours visibles
         btnFilter.setVisible(true);
         btnFilter.setManaged(true);
+
+        renderSprints();
     }
+
 
     private void loadProjects() {
         try {
@@ -197,7 +240,9 @@ public class SprintController {
             }
             sprintList.addAll(sprints);
             sprintTable.setItems(sprintList);
+            renderSprints();
         } catch (SQLException e) {
+
             showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger les sprints", e.getMessage());
         }
     }
@@ -303,7 +348,9 @@ public class SprintController {
             }
             sprintList.addAll(sprints);
             sprintTable.setItems(sprintList);
+            renderSprints();
         } catch (SQLException e) {
+
             showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de filtrer les sprints", e.getMessage());
         }
     }
