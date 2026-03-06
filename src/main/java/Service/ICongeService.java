@@ -11,4 +11,5 @@ public interface ICongeService {
     boolean accepterConge(int congeId, int rhCin, String commentaire);
     boolean refuserConge(int congeId, int rhCin, String commentaire);
     boolean annulerConge(int congeId, int employeCin);
+    int calculateSoldeRestant(int cin);
 }

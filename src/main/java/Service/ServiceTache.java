@@ -187,4 +187,20 @@ public class ServiceTache implements IService<Tache> {
 
         return t;
     }
+
+    public double getSprintProgress(int idSprint) throws SQLException {
+        String query = "SELECT COUNT(*) as total, SUM(CASE WHEN statut = 'DEJA_FAITE' THEN 1 ELSE 0 END) as done FROM tache WHERE id_sprint = ?";
+        try (Connection c = DataSource.getInstance().getCon();
+                PreparedStatement ps = c.prepareStatement(query)) {
+            ps.setInt(1, idSprint);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    int total = rs.getInt("total");
+                    int done = rs.getInt("done");
+                    return total == 0 ? 0.0 : (double) done / total;
+                }
+            }
+        }
+        return 0.0;
+    }
 }
