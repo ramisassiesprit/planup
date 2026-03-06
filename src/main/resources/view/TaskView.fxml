@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
-<VBox spacing="24" styleClass="content-area"
+<VBox spacing="5" styleClass="content-area" style="-fx-padding: 10 30 30 30;"
       xmlns:fx="http://javafx.com/fxml" fx:controller="Controller.TaskController"
       stylesheets="@../assets/style.css">
 
@@ -16,54 +16,54 @@
 
     <HBox spacing="20" VBox.vgrow="ALWAYS">
 
-        <!-- ── Form Card ── -->
-        <VBox fx:id="formContainer" styleClass="card" spacing="14" prefWidth="360">
-            <Label text="✅  Détails de la Tâche" styleClass="card-title"/>
+        <ScrollPane fx:id="formScrollPane" fitToWidth="true" style="-fx-background-color: transparent; -fx-control-inner-background: transparent; -fx-padding: 0;" prefWidth="380" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED">
+            <VBox fx:id="formContainer" styleClass="card" spacing="8" style="-fx-padding: 15;">
+                <Label text="✅  Détails de la Tâche" styleClass="card-title" style="-fx-padding: 0 0 5 0;"/>
 
-            <VBox spacing="5">
-                <Label text="Nom de la tâche" styleClass="form-field-label"/>
-                <TextField fx:id="nameField" promptText="Ex: Développer l'API REST"/>
-            </VBox>
-
-            <VBox spacing="5">
-                <Label text="Description" styleClass="form-field-label"/>
-                <TextArea fx:id="descArea" promptText="Description détaillée..." prefRowCount="3"/>
-            </VBox>
-
-            <VBox spacing="5">
-                <Label text="Date limite" styleClass="form-field-label"/>
-                <DatePicker fx:id="deadlinePicker" promptText="JJ/MM/AAAA" maxWidth="Infinity"/>
-            </VBox>
-
-            <HBox spacing="12">
-                <VBox spacing="5" HBox.hgrow="ALWAYS">
-                    <Label text="Priorité (1-5)" styleClass="form-field-label"/>
-                    <TextField fx:id="priorityField" promptText="Ex: 3"/>
+                <VBox spacing="2">
+                    <Label text="Nom de la tâche" styleClass="form-field-label"/>
+                    <TextField fx:id="nameField" promptText="Ex: Développer l'API REST"/>
                 </VBox>
-                <VBox spacing="5" HBox.hgrow="ALWAYS">
-                    <Label text="Estimation (h)" styleClass="form-field-label"/>
-                    <TextField fx:id="estimationField" promptText="Ex: 8"/>
+
+                <VBox spacing="2">
+                    <Label text="Description" styleClass="form-field-label"/>
+                    <TextArea fx:id="descArea" promptText="Description détaillée..." prefRowCount="2"/>
                 </VBox>
-            </HBox>
 
-            <VBox spacing="5">
-                <Label text="Projet" styleClass="form-field-label"/>
-                <ComboBox fx:id="projectCombo" maxWidth="Infinity" promptText="Sélectionner Projet"/>
-            </VBox>
+                <VBox spacing="2">
+                    <Label text="Date limite" styleClass="form-field-label"/>
+                    <DatePicker fx:id="deadlinePicker" promptText="JJ/MM/AAAA" maxWidth="Infinity"/>
+                </VBox>
 
-            <VBox spacing="5">
-                <Label text="Sprint" styleClass="form-field-label"/>
-                <ComboBox fx:id="sprintCombo" maxWidth="Infinity" promptText="Sélectionner Sprint"/>
-            </VBox>
-
-            <VBox spacing="5">
-                <Label text="Assignation (Manager)" styleClass="form-field-label"/>
-                <HBox spacing="8">
-                    <ComboBox fx:id="assigneeCombo" maxWidth="Infinity" promptText="Assigner à..." HBox.hgrow="ALWAYS"/>
-                    <Button fx:id="btnAssign" text="Assigner" onAction="#handleAssign"
-                            style="-fx-background-color: #f59e0b; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 14; -fx-background-radius: 8; -fx-cursor: hand;"/>
+                <HBox spacing="12">
+                    <VBox spacing="2" HBox.hgrow="ALWAYS">
+                        <Label text="Priorité (1-5)" styleClass="form-field-label"/>
+                        <TextField fx:id="priorityField" promptText="Ex: 3"/>
+                    </VBox>
+                    <VBox spacing="2" HBox.hgrow="ALWAYS">
+                        <Label text="Estimation (h)" styleClass="form-field-label"/>
+                        <TextField fx:id="estimationField" promptText="Ex: 8"/>
+                    </VBox>
                 </HBox>
-            </VBox>
+
+                <VBox spacing="2">
+                    <Label text="Projet" styleClass="form-field-label"/>
+                    <ComboBox fx:id="projectCombo" maxWidth="Infinity" promptText="Sélectionner Projet"/>
+                </VBox>
+
+                <VBox spacing="2">
+                    <Label text="Sprint" styleClass="form-field-label"/>
+                    <ComboBox fx:id="sprintCombo" maxWidth="Infinity" promptText="Sélectionner Sprint"/>
+                </VBox>
+
+                <VBox spacing="2">
+                    <Label text="Assignation (Manager)" styleClass="form-field-label"/>
+                    <HBox spacing="8">
+                        <ComboBox fx:id="assigneeCombo" maxWidth="Infinity" promptText="Assigner à..." HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="btnAssign" text="Assigner" onAction="#handleAssign"
+                                style="-fx-background-color: #f59e0b; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 14; -fx-background-radius: 8; -fx-cursor: hand;"/>
+                    </HBox>
+                </VBox>
 
             <Separator style="-fx-padding: 4 0;"/>
 
@@ -75,39 +75,46 @@
                 </columnConstraints>
                 <Button fx:id="btnAdd"    text="➕  Ajouter"    onAction="#handleAdd"
                         maxWidth="Infinity"
-                        style="-fx-background-color: #10b981; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 0; -fx-background-radius: 8; -fx-cursor: hand;"
+                        style="-fx-background-color: #10b981; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 0; -fx-background-radius: 8; -fx-cursor: hand;"
                         GridPane.columnIndex="0" GridPane.rowIndex="0"/>
                 <Button fx:id="btnUpdate" text="✏️  Modifier"   onAction="#handleUpdate"
                         maxWidth="Infinity"
-                        style="-fx-background-color: #6366f1; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 0; -fx-background-radius: 8; -fx-cursor: hand;"
+                        style="-fx-background-color: #6366f1; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 0; -fx-background-radius: 8; -fx-cursor: hand;"
                         GridPane.columnIndex="1" GridPane.rowIndex="0"/>
                 <Button fx:id="btnDelete" text="🗑️  Supprimer"  onAction="#handleDelete"
                         maxWidth="Infinity"
-                        style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 0; -fx-background-radius: 8; -fx-cursor: hand;"
+                        style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 0; -fx-background-radius: 8; -fx-cursor: hand;"
                         GridPane.columnIndex="0" GridPane.rowIndex="1"/>
                 <Button text="🔄  Vider"        onAction="#handleClear"
                         maxWidth="Infinity"
-                        style="-fx-background-color: #e2e8f0; -fx-text-fill: #475569; -fx-font-weight: bold; -fx-padding: 10 0; -fx-background-radius: 8; -fx-cursor: hand;"
+                        style="-fx-background-color: #e2e8f0; -fx-text-fill: #475569; -fx-font-weight: bold; -fx-padding: 8 0; -fx-background-radius: 8; -fx-cursor: hand;"
                         GridPane.columnIndex="1" GridPane.rowIndex="1"/>
             </GridPane>
-        </VBox>
+            </VBox>
+        </ScrollPane>
 
-        <!-- ── Table Card ── -->
-        <VBox spacing="14" HBox.hgrow="ALWAYS" styleClass="card">
-            <Label text="Liste des Tâches" styleClass="card-title"/>
+        <!-- ── Kanban Board ── -->
+        <HBox spacing="14" HBox.hgrow="ALWAYS">
+            
+            <!-- Colonne Pas Encore Faite -->
+            <VBox spacing="10" HBox.hgrow="ALWAYS" styleClass="card" prefWidth="280">
+                <Label text="Pas Encore Faite" styleClass="card-title" style="-fx-text-fill: #64748b;"/>
+                <ListView fx:id="pasEncoreFaiteList" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent; -fx-border-color: transparent;"/>
+            </VBox>
 
-            <TableView fx:id="taskTable" VBox.vgrow="ALWAYS">
-                <columns>
-                    <TableColumn fx:id="colId"       text="ID"       prefWidth="55"/>
-                    <TableColumn fx:id="colName"     text="Titre"    prefWidth="220"/>
-                    <TableColumn fx:id="colStatus"   text="Statut"   prefWidth="150"/>
-                    <TableColumn fx:id="colAssignee" text="Assigné à" prefWidth="160"/>
-                </columns>
-                <columnResizePolicy>
-                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
-                </columnResizePolicy>
-            </TableView>
-        </VBox>
+            <!-- Colonne En Cours -->
+            <VBox spacing="10" HBox.hgrow="ALWAYS" styleClass="card" prefWidth="280">
+                <Label text="En Cours" styleClass="card-title" style="-fx-text-fill: #3b82f6;"/>
+                <ListView fx:id="enCoursList" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent; -fx-border-color: transparent;"/>
+            </VBox>
+
+            <!-- Colonne Terminée -->
+            <VBox spacing="10" HBox.hgrow="ALWAYS" styleClass="card" prefWidth="280">
+                <Label text="Terminée" styleClass="card-title" style="-fx-text-fill: #10b981;"/>
+                <ListView fx:id="termineeList" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent; -fx-border-color: transparent;"/>
+            </VBox>
+
+        </HBox>
 
     </HBox>
 </VBox>

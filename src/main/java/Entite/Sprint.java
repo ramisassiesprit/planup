@@ -4,6 +4,7 @@ public class Sprint {
     private int idSprint;
     private String name;
     private Project project;
+    private double progress;
 
     public Sprint() {
     }
@@ -41,6 +42,14 @@ public class Sprint {
 
     public void setProject(Project project) {
         this.project = project;
+    }
+
+    public double getProgress() {
+        return progress;
+    }
+
+    public void setProgress(double progress) {
+        this.progress = progress;
     }
 
     @Override

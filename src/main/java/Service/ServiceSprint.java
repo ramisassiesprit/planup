@@ -91,4 +91,28 @@ public class ServiceSprint implements IService<Sprint> {
         }
         return list;
     }
+
+    public double getProjectProgress(int idProject) throws SQLException {
+        String query = "SELECT id_sprint FROM sprint WHERE id_project = ?";
+        List<Integer> sprintIds = new ArrayList<>();
+        try (PreparedStatement ps = connect.prepareStatement(query)) {
+            ps.setInt(1, idProject);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    sprintIds.add(rs.getInt("id_sprint"));
+                }
+            }
+        }
+
+        if (sprintIds.isEmpty())
+            return 0.0;
+
+        ServiceTache serviceTache = new ServiceTache();
+        double totalProgress = 0;
+        for (int idSprint : sprintIds) {
+            totalProgress += serviceTache.getSprintProgress(idSprint);
+        }
+
+        return totalProgress / sprintIds.size();
+    }
 }
