@@ -111,7 +111,7 @@ public class DashboardAdminController {
         // Setup role filter ComboBox
         if (roleFilterComboBox != null) {
             roleFilterComboBox.getItems().setAll("Tous les rôles", "ADMIN", "MANAGER", "DEVELOPPEUR", "INTEGRATEUR",
-                    "RH", "EMPLOYE");
+                    "RH", "EMPLOYE", "CANDIDAT");
             roleFilterComboBox.setValue("Tous les rôles");
             roleFilterComboBox.setOnAction(e -> refreshUsersTable());
         }
@@ -195,7 +195,7 @@ public class DashboardAdminController {
             dialog.setDialogPane(dialogPane);
             dialog.setTitle(user == null ? "Créer Utilisateur" : "Editer Utilisateur");
             controller.roleComboBox.getItems().setAll("ADMIN", "MANAGER", "DEVELOPPEUR", "INTEGRATEUR", "RH",
-                    "EMPLOYE");
+                    "EMPLOYE", "CANDIDAT");
             dialog.showAndWait().ifPresent(result -> {
                 if (result.getButtonData() == ButtonBar.ButtonData.OK_DONE) {
                     Utilisateur edited = controller.getUser();
