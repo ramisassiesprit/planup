@@ -9,9 +9,6 @@
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="Controller.DashboardRHController"
             stylesheets="@../assets/style.css" prefWidth="1280" prefHeight="800">
 
-    <!-- ══════════════════════════════════════════════════════════
-         SIDEBAR
-    ══════════════════════════════════════════════════════════ -->
     <left>
         <VBox styleClass="sidebar" prefWidth="240" spacing="0">
 
@@ -46,13 +43,10 @@
         </VBox>
     </left>
 
-    <!-- ══════════════════════════════════════════════════════════
-         MAIN CONTENT
-    ══════════════════════════════════════════════════════════ -->
     <center>
         <StackPane fx:id="contentArea" styleClass="content-area">
 
-            <!-- ── Welcome / Offre emploi View ── -->
+
             <VBox fx:id="welcomeView" spacing="20" alignment="TOP_LEFT">
 
                 <VBox spacing="4">
