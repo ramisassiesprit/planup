@@ -24,6 +24,8 @@ public class LoginApp extends Application {
     }
 
     public static void main(String[] args) {
+        // Initialize Hibernate and update database schema
+        Utils.HibernateUtil.getSessionFactory();
         launch(args);
     }
 }

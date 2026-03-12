@@ -1,18 +1,30 @@
 package Entite;
 
+import jakarta.persistence.*;
 import java.sql.Date;
 
+@Entity
+@Table(name = "tache")
 public class Tache {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_tache")
     private int idTache;
     private String name;
     private String description;
+    @Column(name = "date_limite")
     private Date dateLimite;
     private int duree;
     private int priorite;
     private int estimation;
+    @Column(name = "date_affectation")
     private Date dateAffectation;
     private String statut; // "PAS_ENCORE_FAITE", "EN_COURS", "DEJA_FAITE"
+    @ManyToOne
+    @JoinColumn(name = "id_sprint")
     private Sprint sprint;
+    @ManyToOne
+    @JoinColumn(name = "cin_affecte")
     private Utilisateur affecte;
 
     public Tache() {

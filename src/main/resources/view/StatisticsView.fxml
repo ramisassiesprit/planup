@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<ScrollPane fitToWidth="true" style="-fx-background-color: transparent;"
+            xmlns:fx="http://javafx.com/fxml" fx:controller="Controller.StatisticsController"
+            stylesheets="@../assets/style.css" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED">
+
+    <VBox spacing="24" styleClass="content-area" style="-fx-padding: 28 32;">
+
+        <!-- Page Header -->
+        <VBox spacing="6">
+            <Label text="📊  Tableau de Bord Analytique" styleClass="page-title"/>
+            <Label text="Vue d'ensemble de l'activité de votre plateforme PlanUp." styleClass="page-subtitle"/>
+        </VBox>
+
+        <!-- Welcome Banner with gradient -->
+        <VBox styleClass="welcome-banner" spacing="6">
+            <Label text="📈 Statistiques en Temps Réel" styleClass="welcome-title"/>
+            <Label text="Les données ci-dessous sont calculées à partir de votre base de données en temps réel." styleClass="welcome-subtitle"/>
+        </VBox>
+
+        <!-- ════════════════════════════════════════════════════════════ -->
+        <!-- KPI Stat Cards Row                                        -->
+        <!-- ════════════════════════════════════════════════════════════ -->
+        <HBox spacing="20" alignment="CENTER">
+
+            <!-- Users stat card -->
+            <VBox styleClass="stat-card" alignment="CENTER" spacing="6" HBox.hgrow="ALWAYS"
+                  style="-fx-border-color: #6366f1; -fx-border-width: 0 0 3 0; -fx-border-radius: 0 0 14 14;">
+                <Label text="👥" style="-fx-font-size: 28px;"/>
+                <Label fx:id="totalUsersLabel" text="0" styleClass="stat-number"/>
+                <Label text="Utilisateurs" styleClass="stat-label"/>
+            </VBox>
+
+            <!-- Projects stat card -->
+            <VBox styleClass="stat-card" alignment="CENTER" spacing="6" HBox.hgrow="ALWAYS"
+                  style="-fx-border-color: #10b981; -fx-border-width: 0 0 3 0; -fx-border-radius: 0 0 14 14;">
+                <Label text="📁" style="-fx-font-size: 28px;"/>
+                <Label fx:id="totalProjectsLabel" text="0" styleClass="stat-number" style="-fx-text-fill: #10b981;"/>
+                <Label text="Projets" styleClass="stat-label"/>
+            </VBox>
+
+            <!-- Tasks stat card -->
+            <VBox styleClass="stat-card" alignment="CENTER" spacing="6" HBox.hgrow="ALWAYS"
+                  style="-fx-border-color: #f59e0b; -fx-border-width: 0 0 3 0; -fx-border-radius: 0 0 14 14;">
+                <Label text="✅" style="-fx-font-size: 28px;"/>
+                <Label fx:id="totalTasksLabel" text="0" styleClass="stat-number" style="-fx-text-fill: #f59e0b;"/>
+                <Label text="Tâches" styleClass="stat-label"/>
+            </VBox>
+
+            <!-- Leave stat card -->
+            <VBox styleClass="stat-card" alignment="CENTER" spacing="6" HBox.hgrow="ALWAYS"
+                  style="-fx-border-color: #ef4444; -fx-border-width: 0 0 3 0; -fx-border-radius: 0 0 14 14;">
+                <Label text="🏖️" style="-fx-font-size: 28px;"/>
+                <Label fx:id="totalCongesLabel" text="0" styleClass="stat-number" style="-fx-text-fill: #ef4444;"/>
+                <Label text="Congés" styleClass="stat-label"/>
+            </VBox>
+
+        </HBox>
+
+        <!-- ════════════════════════════════════════════════════════════ -->
+        <!-- Charts Row 1: Pie Charts                                  -->
+        <!-- ════════════════════════════════════════════════════════════ -->
+        <HBox spacing="20">
+
+            <!-- User Role Pie Chart -->
+            <VBox styleClass="card" spacing="10" HBox.hgrow="ALWAYS" style="-fx-min-height: 360;">
+                <Label text="👥  Répartition par Rôle" styleClass="card-title"/>
+                <PieChart fx:id="userRolePieChart" prefHeight="300" legendSide="BOTTOM"
+                          style="-fx-padding: 0;"/>
+            </VBox>
+
+            <!-- Leave Status Pie Chart -->
+            <VBox styleClass="card" spacing="10" HBox.hgrow="ALWAYS" style="-fx-min-height: 360;">
+                <Label text="🏖️  Congés par Statut" styleClass="card-title"/>
+                <PieChart fx:id="congeStatusPieChart" prefHeight="300" legendSide="BOTTOM"
+                          style="-fx-padding: 0;"/>
+            </VBox>
+
+        </HBox>
+
+        <!-- ════════════════════════════════════════════════════════════ -->
+        <!-- Charts Row 2: Bar Charts                                  -->
+        <!-- ════════════════════════════════════════════════════════════ -->
+        <HBox spacing="20">
+
+            <!-- Task Status Bar Chart -->
+            <VBox styleClass="card" spacing="10" HBox.hgrow="ALWAYS" style="-fx-min-height: 360;">
+                <Label text="📋  Tâches par Statut" styleClass="card-title"/>
+                <BarChart fx:id="taskStatusBarChart" prefHeight="300" barGap="8" categoryGap="30"
+                          style="-fx-padding: 0;">
+                    <xAxis>
+                        <CategoryAxis fx:id="taskCategoryAxis" label="Statut"/>
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis fx:id="taskNumberAxis" label="Nombre"/>
+                    </yAxis>
+                </BarChart>
+            </VBox>
+
+            <!-- Project Progress Bar Chart -->
+            <VBox styleClass="card" spacing="10" HBox.hgrow="ALWAYS" style="-fx-min-height: 360;">
+                <Label text="📁  Progression des Projets" styleClass="card-title"/>
+                <BarChart fx:id="projectProgressBarChart" prefHeight="300" barGap="8" categoryGap="30"
+                          style="-fx-padding: 0;">
+                    <xAxis>
+                        <CategoryAxis fx:id="projectCategoryAxis" label="Projet"/>
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis fx:id="projectNumberAxis" label="Progression (%)" upperBound="100" tickUnit="20"/>
+                    </yAxis>
+                </BarChart>
+            </VBox>
+
+        </HBox>
+
+        <!-- Bottom spacer -->
+        <Region prefHeight="20"/>
+
+    </VBox>
+</ScrollPane>

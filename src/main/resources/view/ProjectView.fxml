@@ -14,37 +14,46 @@
         <Label text="Créez, modifiez et supprimez vos projets." styleClass="page-subtitle"/>
     </VBox>
 
-    <!-- Form Card -->
-    <VBox fx:id="formContainer" styleClass="card" spacing="18">
-        <Label text="📁  Informations du Projet" styleClass="card-title"/>
+    <!-- Stats & Form Row -->
+    <HBox spacing="20">
+        <!-- Form Card -->
+        <VBox fx:id="formContainer" styleClass="card" spacing="18" HBox.hgrow="ALWAYS">
+            <Label text="📁  Informations du Projet" styleClass="card-title"/>
+    
+            <GridPane hgap="16" vgap="12">
+                <columnConstraints>
+                    <ColumnConstraints minWidth="110" prefWidth="150"/>
+                    <ColumnConstraints hgrow="ALWAYS"/>
+                </columnConstraints>
+    
+                <Label text="Nom du Projet :" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="form-field-label"/>
+                <TextField fx:id="nameField" GridPane.columnIndex="1" GridPane.rowIndex="0"
+                           promptText="Ex: Application Mobile"/>
+    
+                <Label text="Type :" GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="form-field-label"/>
+                <TextField fx:id="typeField" GridPane.columnIndex="1" GridPane.rowIndex="1"
+                           promptText="Ex: Web, Mobile, Desktop"/>
+            </GridPane>
+    
+            <!-- Action Buttons -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Button fx:id="btnAdd"    text="➕  Ajouter"    onAction="#handleAdd"
+                        style="-fx-background-color: #10b981; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 8; -fx-cursor: hand;"/>
+                <Button fx:id="btnUpdate" text="✏️  Modifier"   onAction="#handleUpdate"
+                        style="-fx-background-color: #6366f1; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 8; -fx-cursor: hand;"/>
+                <Button fx:id="btnDelete" text="🗑️  Supprimer"  onAction="#handleDelete"
+                        style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 8; -fx-cursor: hand;"/>
+                <Button text="🔄  Effacer"     onAction="#handleClear"
+                        style="-fx-background-color: #e2e8f0; -fx-text-fill: #475569; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 8; -fx-cursor: hand;"/>
+            </HBox>
+        </VBox>
 
-        <GridPane hgap="16" vgap="12">
-            <columnConstraints>
-                <ColumnConstraints minWidth="110" prefWidth="150"/>
-                <ColumnConstraints hgrow="ALWAYS"/>
-            </columnConstraints>
-
-            <Label text="Nom du Projet :" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="form-field-label"/>
-            <TextField fx:id="nameField" GridPane.columnIndex="1" GridPane.rowIndex="0"
-                       promptText="Ex: Application Mobile"/>
-
-            <Label text="Type :" GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="form-field-label"/>
-            <TextField fx:id="typeField" GridPane.columnIndex="1" GridPane.rowIndex="1"
-                       promptText="Ex: Web, Mobile, Desktop"/>
-        </GridPane>
-
-        <!-- Action Buttons -->
-        <HBox spacing="10" alignment="CENTER_LEFT">
-            <Button fx:id="btnAdd"    text="➕  Ajouter"    onAction="#handleAdd"
-                    style="-fx-background-color: #10b981; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 8; -fx-cursor: hand;"/>
-            <Button fx:id="btnUpdate" text="✏️  Modifier"   onAction="#handleUpdate"
-                    style="-fx-background-color: #6366f1; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 8; -fx-cursor: hand;"/>
-            <Button fx:id="btnDelete" text="🗑️  Supprimer"  onAction="#handleDelete"
-                    style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 8; -fx-cursor: hand;"/>
-            <Button text="🔄  Effacer"     onAction="#handleClear"
-                    style="-fx-background-color: #e2e8f0; -fx-text-fill: #475569; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 8; -fx-cursor: hand;"/>
-        </HBox>
-    </VBox>
+        <!-- Quick Stats Chart -->
+        <VBox styleClass="card" spacing="10" minWidth="400" alignment="CENTER">
+            <Label text="📊 Répartition par Type" styleClass="card-title"/>
+            <javafx.scene.chart.PieChart fx:id="typePieChart" prefHeight="220" legendVisible="false" labelsVisible="true"/>
+        </VBox>
+    </HBox>
 
     <!-- Table Card -->
     <VBox VBox.vgrow="ALWAYS" styleClass="card" spacing="14">

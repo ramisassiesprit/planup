@@ -568,3 +568,144 @@
 .sprint-card:hover .sprint-card-actions {
     -fx-opacity: 1.0;
 }
+
+/* ── Charts ─────────────────────────────────────────────── */
+
+/* Pie Chart */
+.chart {
+    -fx-padding: 5;
+}
+
+.chart-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e293b;
+}
+
+.chart-legend {
+    -fx-background-color: transparent;
+    -fx-padding: 8 0 0 0;
+}
+
+.chart-legend-item {
+    -fx-font-size: 11px;
+    -fx-text-fill: #475569;
+}
+
+.chart-legend-symbol {
+    -fx-background-radius: 4;
+    -fx-padding: 4;
+}
+
+/* Pie chart slice colors */
+.default-color0.chart-pie { -fx-pie-color: #6366f1; }
+.default-color1.chart-pie { -fx-pie-color: #10b981; }
+.default-color2.chart-pie { -fx-pie-color: #f59e0b; }
+.default-color3.chart-pie { -fx-pie-color: #ef4444; }
+.default-color4.chart-pie { -fx-pie-color: #8b5cf6; }
+.default-color5.chart-pie { -fx-pie-color: #06b6d4; }
+.default-color6.chart-pie { -fx-pie-color: #ec4899; }
+.default-color7.chart-pie { -fx-pie-color: #84cc16; }
+
+/* Legend symbols matching pie colors */
+.default-color0.chart-legend-symbol { -fx-background-color: #6366f1; }
+.default-color1.chart-legend-symbol { -fx-background-color: #10b981; }
+.default-color2.chart-legend-symbol { -fx-background-color: #f59e0b; }
+.default-color3.chart-legend-symbol { -fx-background-color: #ef4444; }
+.default-color4.chart-legend-symbol { -fx-background-color: #8b5cf6; }
+.default-color5.chart-legend-symbol { -fx-background-color: #06b6d4; }
+.default-color6.chart-legend-symbol { -fx-background-color: #ec4899; }
+.default-color7.chart-legend-symbol { -fx-background-color: #84cc16; }
+
+.chart-pie-label-line {
+    -fx-stroke: #94a3b8;
+    -fx-fill: #94a3b8;
+}
+
+.chart-pie-label {
+    -fx-fill: #475569;
+    -fx-font-size: 11px;
+}
+
+/* Bar Chart */
+.chart-bar {
+    -fx-bar-fill: #6366f1;
+    -fx-background-radius: 4 4 0 0;
+}
+
+.default-color0.chart-bar { -fx-bar-fill: #6366f1; }
+.default-color1.chart-bar { -fx-bar-fill: #10b981; }
+.default-color2.chart-bar { -fx-bar-fill: #f59e0b; }
+.default-color3.chart-bar { -fx-bar-fill: #ef4444; }
+
+.chart-plot-background {
+    -fx-background-color: #fafbfc;
+    -fx-background-radius: 8;
+}
+
+.chart-vertical-grid-lines {
+    -fx-stroke: #f1f5f9;
+}
+
+.chart-horizontal-grid-lines {
+    -fx-stroke: #e2e8f0;
+}
+
+.chart-alternative-row-fill {
+    -fx-fill: transparent;
+    -fx-stroke: transparent;
+}
+
+.axis {
+    -fx-tick-label-fill: #64748b;
+    -fx-font-size: 11px;
+}
+
+.axis-label {
+    -fx-text-fill: #475569;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.axis-tick-mark {
+    -fx-stroke: #cbd5e1;
+}
+
+.axis-minor-tick-mark {
+    -fx-stroke: #e2e8f0;
+}
+
+/* ── Enhanced Stat Cards ────────────────────────────────── */
+.stat-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(99, 102, 241, 0.12), 20, 0, 0, 6);
+    -fx-translate-y: -2;
+}
+
+/* ── Progress Bar (enhanced) ────────────────────────────── */
+.progress-bar {
+    -fx-background-color: #e2e8f0;
+    -fx-background-radius: 6;
+    -fx-pref-height: 10;
+}
+
+.progress-bar .track {
+    -fx-background-color: #e2e8f0;
+    -fx-background-radius: 6;
+}
+
+.progress-bar .bar {
+    -fx-background-color: linear-gradient(to right, #6366f1, #8b5cf6);
+    -fx-background-radius: 6;
+    -fx-background-insets: 0;
+}
+
+/* ── Tooltip styling ────────────────────────────────────── */
+.tooltip {
+    -fx-background-color: #0f172a;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-background-radius: 6;
+    -fx-padding: 8 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0, 0, 2);
+}
+

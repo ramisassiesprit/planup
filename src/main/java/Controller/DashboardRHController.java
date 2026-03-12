@@ -111,6 +111,19 @@ public class DashboardRHController implements Initializable {
     }
 
     @FXML
+    private void showStatistics() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/StatisticsView.fxml"));
+            Parent statsRoot = loader.load();
+            StatisticsController controller = loader.getController();
+            controller.setLoggedInUser(currentUser);
+            contentArea.getChildren().setAll(statsRoot);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
     private void showOffres() {
         contentArea.getChildren().setAll(welcomeView);
     }

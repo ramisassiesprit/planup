@@ -1,13 +1,25 @@
 package Entite;
 
+import jakarta.persistence.*;
 import java.sql.Date;
 
+@Entity
+@Table(name = "candidature")
 public class Candidature {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_candidature")
     private int idCandidature;
+    @ManyToOne
+    @JoinColumn(name = "cin_user")
     private Utilisateur candidat;
+    @ManyToOne
+    @JoinColumn(name = "id_offre")
     private OffreEmploi offre;
     private String statut; // PENDING, ACCEPTED, DECLINED
+    @Column(name = "date_postulation")
     private Date datePostulation;
+    @Column(name = "lettre_motivation", columnDefinition = "TEXT")
     private String lettreMotivation;
 
     public Candidature() {

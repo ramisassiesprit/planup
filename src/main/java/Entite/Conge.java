@@ -1,17 +1,30 @@
 package Entite;
 
+import jakarta.persistence.*;
 import java.sql.Date;
 
+@Entity
+@Table(name = "conge")
 public class Conge {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_conge")
     private int idConge;
+    @ManyToOne
+    @JoinColumn(name = "cin")
     private Utilisateur utilisateur;
     private String type;
+    @Column(name = "date_debut")
     private Date dateDebut;
+    @Column(name = "date_fin")
     private Date dateFin;
+    @Column(name = "nbr_jours")
     private int nbrJours;
     private String justificatif;
     private String statut;
+    @Column(name = "solde_conge")
     private int soldeConge;
+    @Column(name = "conge_solde")
     private int congeSolde;
 
     public Conge() {

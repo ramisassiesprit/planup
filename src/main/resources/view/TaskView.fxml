@@ -90,6 +90,10 @@
                         style="-fx-background-color: #e2e8f0; -fx-text-fill: #475569; -fx-font-weight: bold; -fx-padding: 8 0; -fx-background-radius: 8; -fx-cursor: hand;"
                         GridPane.columnIndex="1" GridPane.rowIndex="1"/>
             </GridPane>
+
+            <Separator style="-fx-padding: 4 0;"/>
+            <Label text="📊 Statut des Tâches" styleClass="card-title" style="-fx-font-size: 14px;"/>
+            <javafx.scene.chart.PieChart fx:id="taskDistributionChart" prefHeight="180" legendVisible="false" labelsVisible="true"/>
             </VBox>
         </ScrollPane>
 

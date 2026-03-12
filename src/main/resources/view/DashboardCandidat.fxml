@@ -11,36 +11,35 @@
 
     <left>
         <VBox styleClass="sidebar" prefWidth="240" spacing="0">
-
-    
+            <!-- Top Part -->
             <VBox spacing="2" style="-fx-padding: 28 20 20 20;">
-                <Label text="PlanUp" styleClass="sidebar-logo" style="-fx-padding: 0;"/>
-                <Label text="Espace Candidat" styleClass="sidebar-logo-sub" style="-fx-padding: 0;"/>
+                <Label text="⚡ PlanUp" styleClass="sidebar-logo" style="-fx-padding: 0;"/>
+                <Label text="Espace Employé" styleClass="sidebar-logo-sub" style="-fx-padding: 0;"/>
             </VBox>
-
             <Region prefHeight="1" style="-fx-background-color: #1e293b;" maxWidth="Infinity"/>
-
             <VBox style="-fx-padding: 16 16 0 16;">
                 <VBox styleClass="sidebar-user-box" spacing="2">
-                    <Label fx:id="userInfoLabel" text="Candidat" styleClass="sidebar-user-name" wrapText="true"/>
-                    <Label text="👤 CANDIDAT" styleClass="sidebar-user-role"/>
+                    <Label fx:id="userInfoLabel" text="Employé" styleClass="sidebar-user-name" wrapText="true"/>
+                    <Label text="🏢 EMPLOYÉ" styleClass="sidebar-user-role"/>
                 </VBox>
             </VBox>
+            
+            <!-- Middle Part -->
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS"
+                      style="-fx-background-color: transparent; -fx-background: transparent; -fx-padding: 0; -fx-border-width: 0;">
+                <VBox spacing="2" style="-fx-padding: 0 12;">
+                    <Button text="💼 Parcourir les Offres" onAction="#showOffres" maxWidth="Infinity" styleClass="sidebar-button"/>
+                    <Button text="📑 Mes Candidatures" onAction="#showMesCandidatures" maxWidth="Infinity" styleClass="sidebar-button"/>
+                </VBox>
+            </ScrollPane>
 
-            <Label text="NAVIGATION" styleClass="sidebar-section-label"/>
+            <Region VBox.vgrow="ALWAYS"/>
 
-    
-            <VBox spacing="2" style="-fx-padding: 0 12;" VBox.vgrow="ALWAYS">
-                <Button text=" Parcourir les Offres" onAction="#showOffres" maxWidth="Infinity" styleClass="sidebar-button"/>
-                <Button text=" Mes Candidatures" onAction="#showMesCandidatures" maxWidth="Infinity" styleClass="sidebar-button"/>
+            <!-- Bottom Part -->
+            <VBox spacing="6" style="-fx-padding: 12 12 20 12;">
+                <Button text="👤 Mon Profil"    onAction="#showProfile" maxWidth="Infinity" styleClass="sidebar-button-profile"/>
+                <Button text="🚪 Déconnexion"   onAction="#logout"      maxWidth="Infinity" styleClass="sidebar-button-logout"/>
             </VBox>
-
-
-            <VBox spacing="6" style="-fx-padding: 12;">
-                <Button text=" Mon Profil"    onAction="#showProfile" maxWidth="Infinity" styleClass="sidebar-button-profile"/>
-                <Button text=" Déconnexion"   onAction="#logout"      maxWidth="Infinity" styleClass="sidebar-button-logout"/>
-            </VBox>
-
         </VBox>
     </left>
 

@@ -10,6 +10,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
@@ -31,6 +32,8 @@ public class CongesController {
     @FXML private TableColumn<Conge, java.sql.Date> dateDebutColumn, dateFinColumn;
     @FXML private TableColumn<Conge, Integer> nbrJoursColumn;
     @FXML private Label lblSoldeCalculated, errCin, errType, errDebut, errFin, errJustificatif;
+    @FXML private Label lblEnAttenteCount, lblAccepteCount, lblRefuseCount, lblAnnuleCount;
+    @FXML private PieChart congesMiniChart;
     @FXML private Button btnDemander, btnAnnuler, btnAccepter, btnRefuser;
 
     private final ICongeService congeService = new CongeService();
@@ -235,33 +238,82 @@ public class CongesController {
             List<Conge> list = congeService.listerConges();
             
             // Privacy filter: Regular users only see their own requests
+            System.out.println("DEBUG: Conges fetched: " + list.size());
+            
             boolean isRHOrAdmin = currentUser != null && (currentUser.getRole().equalsIgnoreCase("RH") || currentUser.getRole().equalsIgnoreCase("ADMIN"));
             if (!isRHOrAdmin && currentUser != null) {
+                int userCin = currentUser.getCin();
                 list = list.stream()
-                        .filter(c -> c.getUtilisateur() != null && c.getUtilisateur().getCin() == currentUser.getCin())
+                        .filter(c -> c.getUtilisateur() != null && c.getUtilisateur().getCin() == userCin)
                         .collect(Collectors.toList());
+                System.out.println("DEBUG: Conges after user filter (CIN=" + userCin + "): " + list.size());
             }
             
             congeList.setAll(list);
             filterConges();
+            updateCongesStats(list);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    private void updateCongesStats(List<Conge> list) {
+        long enAttente = list.stream().filter(c -> "EN_ATTENTE".equals(c.getStatut())).count();
+        long accepte = list.stream().filter(c -> "ACCEPTE".equals(c.getStatut())).count();
+        long refuse = list.stream().filter(c -> "REFUSE".equals(c.getStatut())).count();
+        long annule = list.stream().filter(c -> "ANNULE".equals(c.getStatut())).count();
+
+        if (lblEnAttenteCount != null) lblEnAttenteCount.setText(String.valueOf(enAttente));
+        if (lblAccepteCount != null) lblAccepteCount.setText(String.valueOf(accepte));
+        if (lblRefuseCount != null) lblRefuseCount.setText(String.valueOf(refuse));
+        if (lblAnnuleCount != null) lblAnnuleCount.setText(String.valueOf(annule));
+
+        if (congesMiniChart != null) {
+            ObservableList<PieChart.Data> chartData = FXCollections.observableArrayList();
+            if (enAttente > 0) chartData.add(new PieChart.Data("En attente", enAttente));
+            if (accepte > 0) chartData.add(new PieChart.Data("Accepté", accepte));
+            if (refuse > 0) chartData.add(new PieChart.Data("Refusé", refuse));
+            if (annule > 0) chartData.add(new PieChart.Data("Annulé", annule));
+            congesMiniChart.setData(chartData);
+
+            // Style pie chart slices with matching colors
+            javafx.application.Platform.runLater(() -> {
+                for (PieChart.Data data : chartData) {
+                    if (data.getNode() != null) {
+                        String color;
+                        switch (data.getName()) {
+                            case "En attente": color = "#f59e0b"; break;
+                            case "Accepté": color = "#10b981"; break;
+                            case "Refusé": color = "#ef4444"; break;
+                            case "Annulé": color = "#64748b"; break;
+                            default: color = "#6366f1";
+                        }
+                        data.getNode().setStyle("-fx-pie-color: " + color + ";");
+                    }
+                }
+            });
+        }
+    }
+
     private boolean validateCongeForm() {
+        System.out.println("DEBUG: Starting validation...");
         resetErrors();
         boolean valid = true;
 
-        if (txtCinEmploye.getText().isEmpty()) {
-            errCin.setText("CIN requis");
-            errCin.setVisible(true);
+        String cinText = txtCinEmploye.getText();
+        if (cinText == null || cinText.trim().isEmpty()) {
+            showError(errCin, "CIN requis");
             valid = false;
         } else {
-            Utilisateur u = serviceUtilisateur.findByCin(Integer.parseInt(txtCinEmploye.getText()));
-            if (u == null) {
-                errCin.setText("Employé non trouvé");
-                errCin.setVisible(true);
+            try {
+                int cin = Integer.parseInt(cinText.trim());
+                Utilisateur u = serviceUtilisateur.findByCin(cin);
+                if (u == null) {
+                    showError(errCin, "Employé non trouvé");
+                    valid = false;
+                }
+            } catch (NumberFormatException e) {
+                showError(errCin, "CIN doit être numérique");
                 valid = false;
             }
         }
@@ -269,46 +321,54 @@ public class CongesController {
         String typeVal = cbType.getValue();
         String typeTxt = cbType.getEditor().getText();
         if ((typeVal == null || typeVal.isEmpty()) && (typeTxt == null || typeTxt.trim().isEmpty())) {
-            errType.setText("Type requis");
-            errType.setVisible(true);
+            showError(errType, "Type requis");
             valid = false;
         }
 
-        if (dpDateDebut.getValue() == null) {
-            errDebut.setText("Date début requise");
-            errDebut.setVisible(true);
+        LocalDate debut = dpDateDebut.getValue();
+        if (debut == null) {
+            showError(errDebut, "Date début requise");
             valid = false;
-        } else if (dpDateDebut.getValue().isBefore(LocalDate.now())) {
-            errDebut.setText("La date doit être aujourd'hui ou dans le futur");
-            errDebut.setVisible(true);
+        } else if (debut.isBefore(LocalDate.now())) {
+            showError(errDebut, "La date doit être aujourd'hui ou dans le futur");
             valid = false;
         }
         
-        if (dpDateFin.getValue() == null) {
-            errFin.setText("Date fin requise");
-            errFin.setVisible(true);
+        LocalDate fin = dpDateFin.getValue();
+        if (fin == null) {
+            showError(errFin, "Date fin requise");
             valid = false;
-        } else if (dpDateDebut.getValue() != null && !dpDateFin.getValue().isAfter(dpDateDebut.getValue())) {
-            errFin.setText("La date de fin doit être strictement après le début");
-            errFin.setVisible(true);
-            valid = false;
-        }
-
-        if (txtDjon.getText().isEmpty()) {
-            errJustificatif.setText("Justificatif requis (texte ou fichier)");
-            errJustificatif.setVisible(true);
+        } else if (debut != null && !fin.isAfter(debut)) {
+            showError(errFin, "La date de fin doit être strictement après le début");
             valid = false;
         }
 
+        String justificatif = txtDjon.getText();
+        if (justificatif == null || justificatif.trim().isEmpty()) {
+            showError(errJustificatif, "Justificatif requis (texte ou fichier)");
+            valid = false;
+        }
+
+        System.out.println("DEBUG: Validation result: " + valid);
         return valid;
     }
 
+    private void showError(Label lbl, String msg) {
+        if (lbl != null) {
+            System.out.println("DEBUG: Showing error: " + msg);
+            lbl.setText(msg);
+            lbl.setStyle("-fx-text-fill: #ef4444; -fx-font-weight: bold; -fx-font-size: 11px;");
+            lbl.setVisible(true);
+        }
+    }
+
     private void resetErrors() {
-        errCin.setVisible(false);
-        errType.setVisible(false);
-        errDebut.setVisible(false);
-        errFin.setVisible(false);
-        errJustificatif.setVisible(false);
+        Label[] labels = {errCin, errType, errDebut, errFin, errJustificatif};
+        for (Label lbl : labels) {
+            if (lbl != null) {
+                lbl.setVisible(false);
+            }
+        }
     }
 
     private void resetForm() {

@@ -1,9 +1,19 @@
 package Entite;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "sprint")
 public class Sprint {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_sprint")
     private int idSprint;
     private String name;
+    @ManyToOne
+    @JoinColumn(name = "id_project")
     private Project project;
+    @Transient
     private double progress;
 
     public Sprint() {

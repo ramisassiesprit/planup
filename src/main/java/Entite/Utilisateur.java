@@ -1,11 +1,19 @@
 package Entite;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "utilisateur")
 public class Utilisateur {
+    @Id
     private int cin;
     private String nom;
     private String prenom;
+    @Column(unique = true)
     private String email;
+    @Column(name = "mot_de_passe")
     private String motDePasse;
+    @Column(name = "num_tel")
     private String numTel;
     private String role;
 

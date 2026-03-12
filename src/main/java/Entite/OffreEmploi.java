@@ -1,17 +1,29 @@
 package Entite;
 
+import jakarta.persistence.*;
 import java.sql.Date;
 
+@Entity
+@Table(name = "offre_emploi")
 public class OffreEmploi {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_offre")
     private int idOffre;
     private String titre;
+    @Column(columnDefinition = "TEXT")
     private String description;
+    @Column(name = "profil_recherche")
     private String profilRecherche;
+    @Column(name = "type_contrat")
     private String typeContrat;
     private double salaire;
     private String localisation;
+    @Column(name = "date_publication")
     private Date datePublication;
     private String statut;
+    @ManyToOne
+    @JoinColumn(name = "cin_rh")
     private Utilisateur rh;
 
     public OffreEmploi() {

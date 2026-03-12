@@ -1,9 +1,17 @@
 package Entite;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "project")
 public class Project {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_project")
     private int idProject;
     private String name;
     private String type;
+    @Transient
     private double progress;
 
     public Project() {

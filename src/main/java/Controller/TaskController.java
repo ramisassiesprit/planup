@@ -21,6 +21,7 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
+import javafx.scene.chart.PieChart; // Added import for PieChart
 
 import java.sql.SQLException;
 import java.sql.Date;
@@ -28,6 +29,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class TaskController {
+
+    @FXML
+    private PieChart taskDistributionChart; // Added PieChart field
 
     @FXML
     private ListView<Tache> pasEncoreFaiteList;
@@ -357,6 +361,7 @@ public class TaskController {
                 projectCombo.setItems(FXCollections.observableArrayList(serviceProject.readAll()));
                 sprintCombo.setItems(FXCollections.observableArrayList(serviceSprint.readAll()));
             }
+            updateChart();
         } catch (SQLException e) {
             System.err.println("Error loading tasks: " + e.getMessage());
         }
@@ -508,6 +513,25 @@ public class TaskController {
         pasEncoreFaiteList.getSelectionModel().clearSelection();
         enCoursList.getSelectionModel().clearSelection();
         termineeList.getSelectionModel().clearSelection();
+    }
+
+    private void updateChart() {
+        long pasEncore = taskList.stream().filter(t -> "PAS_ENCORE_FAITE".equalsIgnoreCase(t.getStatut())).count();
+        long enCours = taskList.stream().filter(t -> "EN_COURS".equalsIgnoreCase(t.getStatut())).count();
+        long terminee = taskList.stream().filter(t -> "TERMINEE".equalsIgnoreCase(t.getStatut()) || "DEJA_FAITE".equalsIgnoreCase(t.getStatut())).count();
+
+        ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList(
+                new PieChart.Data("À faire (" + pasEncore + ")", pasEncore),
+                new PieChart.Data("En cours (" + enCours + ")", enCours),
+                new PieChart.Data("Terminées (" + terminee + ")", terminee)
+        );
+
+        taskDistributionChart.setData(pieData);
+
+        for (PieChart.Data data : pieData) {
+            Tooltip tooltip = new Tooltip(data.getName());
+            Tooltip.install(data.getNode(), tooltip);
+        }
     }
 
     private void showAlert(Alert.AlertType type, String title, String header, String content) {

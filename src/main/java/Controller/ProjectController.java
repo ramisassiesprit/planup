@@ -8,13 +8,19 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.chart.PieChart;
 import javafx.scene.layout.VBox;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class ProjectController {
+
+    @FXML
+    private PieChart typePieChart;
 
     @FXML
     private TableView<Project> projectTable;
@@ -126,6 +132,7 @@ public class ProjectController {
             }
             projectList.addAll(projects);
             projectTable.setItems(projectList);
+            updateTypeChart(projects);
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger les projets", e.getMessage());
         }
@@ -226,6 +233,25 @@ public class ProjectController {
     private void clearFields() {
         nameField.clear();
         typeField.clear();
+    }
+
+    private void updateTypeChart(List<Project> projects) {
+        Map<String, Long> typeCounts = projects.stream()
+                .collect(Collectors.groupingBy(Project::getType, Collectors.counting()));
+
+        ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList();
+        typeCounts.forEach((type, count) -> {
+            pieData.add(new PieChart.Data(type + " (" + count + ")", count));
+        });
+
+        typePieChart.setData(pieData);
+
+        for (PieChart.Data data : pieData) {
+            Tooltip tooltip = new Tooltip(data.getName() + ": " + (int) data.getPieValue());
+            Tooltip.install(data.getNode(), tooltip);
+            data.getNode().setOnMouseEntered(e -> data.getNode().setStyle("-fx-opacity: 0.8; -fx-cursor: hand;"));
+            data.getNode().setOnMouseExited(e -> data.getNode().setStyle("-fx-opacity: 1.0;"));
+        }
     }
 
     private void showAlert(Alert.AlertType type, String title, String header, String content) {
