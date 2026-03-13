@@ -2,6 +2,7 @@ package Controller;
 
 import Entite.Utilisateur;
 import Service.ServiceUtilisateur;
+import Utils.MailUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -212,6 +213,8 @@ public class DashboardAdminController {
                                 alert.showAndWait();
                                 return;
                             }
+                            // Envoyer l'email dans un nouveau thread pour ne pas bloquer l'UI
+                            new Thread(() -> MailUtils.sendAccountDetails(edited)).start();
                         } catch (SQLException ex) {
                             ex.printStackTrace();
                             showAlert(AlertType.ERROR, "Erreur", "Ajout échoué", ex.getMessage());

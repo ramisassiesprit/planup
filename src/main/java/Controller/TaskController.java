@@ -164,7 +164,7 @@ public class TaskController {
         public TaskListCell() {
             super();
             nameLabel = new Label();
-            nameLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+            nameLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: black;");
 
             assigneeLabel = new Label();
             assigneeLabel.setStyle("-fx-text-fill: #64748b; -fx-font-size: 12px;");

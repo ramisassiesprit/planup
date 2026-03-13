@@ -281,6 +281,11 @@
     -fx-border-width: 1.5;
     -fx-background-color: white;
     -fx-font-size: 13px;
+    -fx-text-fill: #000000;
+}
+
+.date-picker > .text-field {
+    -fx-text-fill: #000000;
 }
 
 .text-field:focused,
@@ -293,7 +298,7 @@
 .form-field-label {
     -fx-font-size: 12px;
     -fx-font-weight: bold;
-    -fx-text-fill: #374151;
+    -fx-text-fill: #000000;
     -fx-padding: 0 0 2 0;
 }
 
@@ -404,6 +409,7 @@
 /* ── ComboBox ───────────────────────────────────────────── */
 .combo-box .list-cell {
     -fx-padding: 8 12;
+    -fx-text-fill: #000000;
 }
 
 .combo-box-popup .list-view {
@@ -434,13 +440,19 @@
 }
 
 /* ── Login specific ─────────────────────────────────────── */
+.login-root {
+    -fx-background-image: url('wallp.jpg');
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+}
+
 .login-card {
-    -fx-background-color: rgba(255, 255, 255, 0.05);
+    -fx-background-color: rgba(15, 23, 42, 0.85); /* Darker and more opaque for visibility */
     -fx-background-radius: 20;
-    -fx-border-color: rgba(255, 255, 255, 0.1);
+    -fx-border-color: rgba(255, 255, 255, 0.15);
     -fx-border-radius: 20;
     -fx-border-width: 1;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 30, 0, 0, 10);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.6), 40, 0, 0, 15);
     -fx-padding: 40;
 }
 
@@ -452,24 +464,24 @@
 
 .login-subtitle {
     -fx-font-size: 14px;
-    -fx-text-fill: rgba(255, 255, 255, 0.5);
+    -fx-text-fill: rgba(255, 255, 255, 0.8);
 }
 
 .login-field-label {
     -fx-font-size: 12px;
     -fx-font-weight: bold;
-    -fx-text-fill: rgba(255, 255, 255, 0.7);
+    -fx-text-fill: white;
 }
 
 .login-field {
     -fx-padding: 12 16;
     -fx-background-radius: 10;
-    -fx-background-color: rgba(255, 255, 255, 0.08);
-    -fx-border-color: rgba(255, 255, 255, 0.15);
+    -fx-background-color: rgba(0, 0, 0, 0.25);
+    -fx-border-color: rgba(255, 255, 255, 0.25);
     -fx-border-radius: 10;
     -fx-border-width: 1;
     -fx-text-fill: white;
-    -fx-prompt-text-fill: rgba(255, 255, 255, 0.35);
+    -fx-prompt-text-fill: rgba(255, 255, 255, 0.5);
     -fx-font-size: 14px;
 }
 

@@ -11,7 +11,7 @@
            fx:controller="Controller.LoginController"
            prefHeight="650.0" prefWidth="900.0"
            stylesheets="@../assets/style.css"
-           style="-fx-background-color: linear-gradient(to bottom right, #0f172a, #1e1b4b, #0f172a);">
+           styleClass="login-root">
 
     <!-- Background decorative circles -->
     <StackPane maxWidth="900" maxHeight="650">

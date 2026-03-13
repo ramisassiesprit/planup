@@ -15,7 +15,7 @@ public class ServiceCandidature {
     private ServiceOffreEmploi serviceOffreEmploi = new ServiceOffreEmploi();
 
     public boolean ajouter(Candidature candidature) {
-        String req = "INSERT INTO candidature (cin_candidat, id_offre, statut, date_postulation, lettre_motivation) VALUES (?, ?, ?, ?, ?)";
+        String req = "INSERT INTO candidature (cin_user, id_offre, statut, date_postulation, lettre_motivation) VALUES (?, ?, ?, ?, ?)";
         try {
             PreparedStatement pst = connect.prepareStatement(req, Statement.RETURN_GENERATED_KEYS);
             pst.setInt(1, candidature.getCandidat().getCin());
@@ -55,7 +55,7 @@ public class ServiceCandidature {
 
     public List<Candidature> afficherByCandidatCin(int cin) {
         List<Candidature> candidatures = new ArrayList<>();
-        String req = "SELECT * FROM candidature WHERE cin_candidat = ?";
+        String req = "SELECT * FROM candidature WHERE cin_user = ?";
         try {
             PreparedStatement pst = connect.prepareStatement(req);
             pst.setInt(1, cin);
@@ -100,7 +100,7 @@ public class ServiceCandidature {
     }
 
     public Candidature getCandidatureByCanidatAndOffre(int cinCandidat, int idOffre) {
-        String req = "SELECT * FROM candidature WHERE cin_candidat = ? AND id_offre = ?";
+        String req = "SELECT * FROM candidature WHERE cin_user = ? AND id_offre = ?";
         try {
             PreparedStatement pst = connect.prepareStatement(req);
             pst.setInt(1, cinCandidat);
@@ -130,7 +130,7 @@ public class ServiceCandidature {
 
     private Candidature mapResultSetToCandidature(ResultSet rs) throws SQLException {
         int idCandidature = rs.getInt("id_candidature");
-        int cinCandidat = rs.getInt("cin_candidat");
+        int cinCandidat = rs.getInt("cin_user");
         int idOffre = rs.getInt("id_offre");
         String statut = rs.getString("statut");
         Date datePostulation = rs.getDate("date_postulation");
